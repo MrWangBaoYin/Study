@@ -30,10 +30,23 @@
 
 //transform 适用于块元素
 
-//perspective:1000px;
+//perspective:1000px;transform-style:preserve-3d;
+
+
 //:focus  :hover :target 选择器可用于选取当前活动的目标元素 :active :checked
 
+// 总结下，CSS3中的三种动画:tranform形变动画/transition缓动动画/animation逐帧动画;
+
+// tranform: rotate旋转/skew扭曲/scale缩放/translate移动/matrix矩阵变形;
+
+// transition: property duration timing-function delay;
+
+// animation: KeyframesName duration timing-function delay iteration-count direction play-state fill-mode;
+//alternate running和paused forwards backwards
 @font-face{
     font-family: byt;
     src: url(/usr/share/fonts/win/byt.ttf);
+}
+div{
+    transform-style:preserve-3d;
 }
