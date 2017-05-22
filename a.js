@@ -1,9 +1,2 @@
-console.log('ni hao')
-var a = 10;
-
-var a=document.getElementById('div')
-
-class_name.prototype.method_name = function(first_argument) {
-	// body...
-};
-function
+var a = document.getElementById('div1');
+var b = document.getElementsByTagName('li');
