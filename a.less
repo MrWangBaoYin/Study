@@ -1,21 +1,39 @@
 .border-radius(@default){// 四个半径值分别是左上角、右上角、右下角和左下角，顺时针
-    -webkit-border-radius:@arguments;
-    -moz-border-radius:@arguments;
-     -ms-border-radius:@arguments;
-    -o-border-radius:@arguments;
+    border-radius:@arguments;
 }
-.box-shadow(@default){
-    -webkit-box-shadow:@arguments;
-    -moz-box-shadow:@arguments;
-     -ms-box-shadow:@arguments;
-    -o-box-shadow:@arguments;
+.box-shadow(@default){//X轴偏移量 Y轴偏移量 [阴影模糊半径] [阴影扩展半径] [阴影颜色] [投影方式] inset;
+     box-shadow:@arguments;
 }
-.border-image(@default){
+.border-image(@default){//url() size(px..%) repeat round stretch   border-image:url(borderimg.png) 70 stretch
+    border-image:@arguments;
+}
+.bgRgba(@default){
+    bakcground-color:rgba(@arguments);
+}
+//linear-gradient([设置方向]，[设置开始颜色]，[设置多种过度颜色]，[设置结束颜色])  可以作为色彩图片使用
 
-}
-.box{
-    .border-radius(5px);
-    background: red;
-    width: 100px;height: 100px;
-    .box-shadow(3px -3px 6px );
+//opacity:0;filter:alpha(opacity=0);
+
+//省略标记text-overflow:ellipsis; overflow:hidden; white-space:nowrap;
+
+//文本阴影text-shadow: X-Offset Y-Offset blur color;
+
+// 背景图片的原始起始位置  background-origin ： border-box | padding-box | content-box;
+
+// 背景图片裁剪   background-clip ： border-box | padding-box | content-box | no-clip
+
+ //多重背景 background:url(Downloads/1.jpg) no-repeat left top/100px 200px ,url(Downloads/1.jpg)no-repeat;
+
+// 在Web的表单中，有些表单元素有可用（“:enabled”）和不可用（“:disabled”）状态，比如输入框，密码框，复选框等。在默认情况之下，这些表单元素都处在可用状态。那么我们可以通过伪选择器“:enabled”对这些表单元素设置样式。
+
+// 在表单元素中，单选按钮和复选按钮都具有选中和未选中状态。（大家都知道，要覆写这两个按钮默认样式比较困难）。在CSS3中，我们可以通过状态选择器“:checked”配合其他标签实现自定义样式。而“:checked”表示的是选中状态。
+
+//transform 适用于块元素
+
+//perspective:1000px;
+//:focus  :hover :target 选择器可用于选取当前活动的目标元素 :active :checked
+
+@font-face{
+    font-family: byt;
+    src: url(/usr/share/fonts/win/byt.ttf);
 }
