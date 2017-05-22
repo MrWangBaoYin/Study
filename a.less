@@ -1,2 +1,21 @@
-@var:green;
-.a{color: @var;}
+.border-radius(@default){// 四个半径值分别是左上角、右上角、右下角和左下角，顺时针
+    -webkit-border-radius:@arguments;
+    -moz-border-radius:@arguments;
+     -ms-border-radius:@arguments;
+    -o-border-radius:@arguments;
+}
+.box-shadow(@default){
+    -webkit-box-shadow:@arguments;
+    -moz-box-shadow:@arguments;
+     -ms-box-shadow:@arguments;
+    -o-box-shadow:@arguments;
+}
+.border-image(@default){
+
+}
+.box{
+    .border-radius(5px);
+    background: red;
+    width: 100px;height: 100px;
+    .box-shadow(3px -3px 6px );
+}
