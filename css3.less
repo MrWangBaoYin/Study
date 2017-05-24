@@ -43,10 +43,23 @@
 
 // animation: KeyframesName duration timing-function delay iteration-count direction play-state fill-mode;
 //alternate running和paused forwards backwards
+
+/*
+颜色渐变 线性渐变 径向渐变  重复线性径向渐变 渐变颜色支持rgba() []内中内容为可选 在不写%比值时,默认颜色节点均匀分布 颜色百分号之间空格隔开
+
+线性渐变 linear-gradient(方向,颜色 [?%],颜色 [?%],......);
+重复线性渐变 repeating-linear-gradient(方向,颜色 (?%),颜色 (?%),......);百分数不可省略,最终的?%决定重复的次数
+径向渐变 radial-gradient(origin,shape,size,color  step,color step,......);
+重复径向渐变 repeating-radial-gradient(...................);
+起点 默认情况下是center元素的的中心点,渐变的形状为ellipse椭圆,渐变的大小是farthest-corner最远的角落
+shape取值 circle圆 ellipse椭圆
+size取值  closest-side  farthest-side  closest-corner farthest-corner
+用于任何可用image图片的地方 */
+
 @font-face{
     font-family: byt;
     src: url(/usr/share/fonts/win/byt.ttf);
 }
-div{
+.div{
     transform-style:preserve-3d;
 }
