@@ -1,6 +1,6 @@
 /*对象通过引用传递,它们永远不会拷贝*/
 var Y = require('underscore');
-var _ = Y._;
+var _ = Y._; //在浏览器端验证时需要被注释
 function 拷贝对象(obj){
     var a = {};
     for(var x in obj){
@@ -25,7 +25,7 @@ var a={
         console.log(this.name + ' say hello');
     }
 }
-test('对象赋值为引用');
+test('对象赋值为引用 ');
 a.say();
 
 var b = a;
@@ -33,7 +33,7 @@ b.name = 'da ming';
 console.log(a.name);
 
 var c = 拷贝对象(a);
-test("拷贝对象");
+test("拷贝对象 ");
 c.name = 'xiao hong';
 console.log(a.name);
 c.name = 'da ming';
@@ -48,7 +48,7 @@ function 继承于(proto){
     a.prototype = proto;
     return new a;
 }
-test('继承于');
+test('继承于 ');
 var d = 继承于(c);
 
 d.say();
@@ -56,7 +56,7 @@ d.say();
 function type(target){
     console.log(Object.prototype.toString.call(target));
 }
-test('类型');
+test('类型 ');
 type(继承于);
 type([1,3,4]);
 type(d);
@@ -91,7 +91,7 @@ type(new Date);
 当函数按照此模式调用时,this被绑定到全局对象*/
 
 /*是语言设计的一个错误,使方法不能利用内部函数来帮助它工作,因为this绑定到了全局对象,不能和方法共享对对象的访问权,规定在方法中用that代替this,方法内部函数就可以通过that来访问对象*/
-test('函数调用模式');
+test('函数调用模式 ');
 var a={};
 a.b={
     name:'xiao ming',
@@ -109,7 +109,7 @@ a.b={
 }
 
 a.b.print();
-test("额外收获")
+test("额外收获 ")
 console.log(this);
 (function () {
 //   console.log(this); /*东西太多先注释*/
@@ -118,7 +118,7 @@ console.log(this);
 
 /*构造器调用模式 如果在一个函数前面加上new来调用,那么将创建一个隐藏连接到该函数的prototype成员的新对象,同时this将会绑定到那个新对象上   new前缀也会改变return语句的行为*/
 /*目的就是结合new前缀调用的函数被称为构造器函数.按照约定,它们保存在以大写格式命名的变量里,因为如果运行时没在前面加上new不会警告也不会报错,所以约定非常重要*/
-test("构造器调用模式");
+test("构造器调用模式 ");
 var A = function() {
     this.a = 1;
     this.b = 2;
@@ -147,7 +147,7 @@ A.prototype.say.call(c);
 
 /*一个函数总会返回一个值,乳沟没指定返回值,则返回undefined
 如果函数前面加上new操作符,切返回值不是一个对象,则返回this(该新对象)*/
-test("测试函数返回值的改变");
+test("测试函数返回值的改变 ");
 var A=function(){
     this.a = 1;
     this.b = 2;
@@ -177,7 +177,7 @@ console.log((-10/3).integer());
 /*通过给基本类型增加方法,可以大大提高语言的表现力,基本类型的原型是公共的结构,在类库混用时务必小心*/
 
 /*递归*/
-test("汉诺塔问题");
+test("汉诺塔问题 ");
 function 汉诺塔(disc,fir,sec,thr) {
     if(disc>0){
         汉诺塔(disc-1,fir,thr,sec);
@@ -201,7 +201,7 @@ function 递归节点(node,func) {
 
 /*尾递归:是一种在函数的最后执行递归调用语句的特殊形式的递归,这种递归可以被替换为一个循环,可以显著提高速度,并且深度递归不会因为栈溢出而失败*/
 /*js并没有提供尾递归优化*/
-test('尾递归优化');
+test('尾递归优化 ');
 var factorial=function factorial(i,a){
     a = a || 1;  //这里默认参数
     if(i < 2){
@@ -304,3 +304,174 @@ var fade=function(node){
 /*函数的声明,后面声明会覆盖前面的,而变量同名被忽略.函数的声明优先级高,(但里面的内容不会被关心),直到函数被调用时函数内部在形成自己的词法环境,按照规定的语法规则执行*/
 
 /*设置节点事件处理程序的两种方式*/
+test("节点事件处理程序 浏览器端")
+var add_the_handles1=function(nodes,event){
+    for(var i=0;i<nodes.length;i++){
+        nodes[i]['on'+event]=(function (num) {
+            return ()=>console.log(num);
+        }(i));
+    }
+}
+
+var add_the_handles2=function(nodes,event){
+    for(var i=0;i<nodes.length;i++){
+        (function(num){
+            nodes[i]['on'+event]=function () {
+                console.log(num);
+            };
+        }(i));
+    }
+}
+/*闭包注意点:
+父函数每调用一次,产生一个新的闭包对象;*/
+
+/*函数的回调,用于异步请求*/
+/*模块:我们可以使用函数和闭包来构建模块.
+模块是一个提供接口却隐藏状态和实现的函数或者对象,通过函数产生模块几乎可以完全摒弃全局变量的使用*/
+test("模块 正则表达式");
+/*寻找HTML中的字符实体并替换它们为对应字符*/
+String.method('deentityify',function () {
+    var obj={
+        '&quot;':'"',
+        '&lt;'  :'<',
+        '&gt;'  :'>'
+    };
+
+    return function () {
+        return this.replace(/&[a-z]{2,4}\;/g,function (a,b) {
+            console.log(b);
+            return obj[a];
+        }
+        );
+    };
+}());
+
+console.log('&lt;&gt;&quot;'.deentityify());
+/*正则表达式 替换指定的正则表达式所定义的字符模式的所有匹配项
+函数参数为:
+第一个参数在regex这个完整的正则匹配出来的结果
+倒数第二个参数是第一个参数（匹配结果）在输入字符串中的索引位置
+最后一个参数是输入字符串本身
+如果regex中存在分组，那么参数列表的长度N>3一定成立，且第2到N-2个参数，分别为regex中分组所产生的匹配结果*/
+
+/*模块模式的一般形式是一个定义了私有变量和私有函数的函数,利用闭包创建可以访问私有变量和私有函数的特权函数,最后返回这些特权函数(对象),或者吧它们保存到一个可访问的地方*/
+
+/*函数的级联*/
+/*有一些方法没有返回值,例如一些设置或修改对象的某个状态不用返回任何值的方法,让这些方法返回this而不是undefined,就可以启用级联*/
+/*级联可以产生具备很强表现力的接口*/
+test('级联 函数参数数组化')
+Function.method('curry',function(){
+    var slice=Array.prototype.slice;
+    var args=slice.call(arguments);
+    var that=this;
+    return function(){
+        that.apply(null,args.concat(slice.apply(arguments)));
+    }
+});
+var add=(a,b)=>console.log(a+b);
+add(2,3);
+var add1=add.curry(1);
+add1(3);
+test("参数数组的特殊属性 ")
+var a=function(num){
+    if(num > 0){
+        console.log(num);
+        arguments.callee(num-1);
+    }
+}
+a(3);
+/*arguments这个类数组有一个独特的属性.callee就是它所在函数的引用*/
+/*类数组转化为数组的方法*/
+test('函数参数数组化 ');
+var slice=Array.prototype.slice;
+var b={
+    1:3,
+    2:4,
+    6:5,
+    length:4
+};
+var c=slice.apply(b);
+console.log(type(c)+' '+c);
+/*Array.prototype.slice.apply(arguments)这是运行效率比较快的方法（看别人资料说的）,为什么不是数组也可以，因为arguments对象有length属性，而这个方法会根据length属性,返回一个具有length长度的数组。若length属性不为number，则数组长度返回0;所以其他对象只要有length属性也是可以的哟，如对象中有属性0,对应的就是arr[0],即属性为自然数的number就是对应的数组的下标，若该值大于长度，就被舍弃了。*/
+/*新增的方式有Array.from(arguments)*/
+/*最简单的方式用个循环*/
+/*slice参数为0时,可以省略*/
+
+/*函数的记忆:函数可以用对象去记住先前操作的结果,从而避免无谓的运算,这种优化被称为记忆*/
+test("记忆函数实例 记忆斐波那契数列")
+var 记忆斐波那契数列=(function(){
+    var arr=[0,1];
+    var count=0;
+    return {
+        compute:function(num){
+            var callee=arguments.callee;
+            if(num < 0){
+                return 0;
+            }
+            else{
+                if(!arr[num]){
+                    arr[num]=callee(num-1)+callee(num-2);
+                    count++;
+                }
+                return arr[num];
+            }
+        },
+        count:()=>console.log(count)
+    }
+}());
+for(var i=0;i<=11;i++){
+    console.log(i+':'+记忆斐波那契数列.compute(i));
+}
+记忆斐波那契数列.count();
+
+/*函数中还有一个隐藏属性caller,返回调用指定函数的函数.如果一个函数f是在全局作用域内被调用的,则f.caller为null,相反,如果一个函数是在另外一个函数作用域内被调用的,则f.caller指向调用它的那个函数.*/
+test("函数调用者 ")
+var a ={
+    say:()=>console.log(arguments.callee.caller)
+}
+
+a.say();
+
+var a=function(){
+    console.log(arguments.callee.caller);
+}
+var b=function(){
+    a();
+}
+
+b();
+a();
+var c={};
+a.apply(c);
+
+test('记忆函数一般化 ');
+var memoizer=function(memo,express){
+    return function(num){
+        callee=arguments.callee;
+        if(num<0){
+            return 0;
+        }
+        else{
+            if(!memo[num]){
+                memo[num]=express(callee,num);
+            }
+            return memo[num];
+        }
+    };
+};
+test('记忆函数一般化验证1斐波那契数列');
+var fibonacci=memoizer([0,1],function(shell,num){
+    return shell(num-1)+shell(num-2);
+});
+for(var i=0;i<=11;i++){
+    console.log(i+':'+fibonacci(i));
+}
+test('记忆函数一般化验证2阶乘');
+var factorial=memoizer([1],function(shell,num){
+    return num*shell(num-1);
+});
+for(var i=0;i<=11;i++){
+    console.log(i+':'+factorial(i));
+}
+
+/**/
