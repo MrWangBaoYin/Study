@@ -10,10 +10,10 @@ function 拷贝对象(obj){
 }
 var test = (function(){
     var num = 1;
+    var b ='一一一一一一一一一一一';
+    b = b + b + b;
     return function (str) {
         var a = '第'+num+'次测试: '+str+' ';
-        var b ='一一一一一一一一一一一';
-        var b = b + b + b;
         console.log(a + b.slice(a.length));
         num++;
     };
@@ -114,10 +114,11 @@ console.log(this);
 (function () {
 //   console.log(this); /*东西太多先注释*/
 }());
-/*额外收获 直接打印this不会打印全局详细信息,在嵌套中可以打印出全局信息的详细情况*/
+
+/*额外收获 直接打印this不会打印全局详细信息,在嵌套中可以打印出全局信息的详细情况,*/
 
 /*构造器调用模式 如果在一个函数前面加上new来调用,那么将创建一个隐藏连接到该函数的prototype成员的新对象,同时this将会绑定到那个新对象上   new前缀也会改变return语句的行为*/
-/*目的就是结合new前缀调用的函数被称为构造器函数.按照约定,它们保存在以大写格式命名的变量里,因为如果运行时没在前面加上new不会警告也不会报错,所以约定非常重要*/
+/*目的就是结合new前缀调用的函数被称为构造器函数.按照约定,它们保存在以大写格式命名的变量里,因为如果运行时没在前面加上new不会警告也不会报错,因为函数会绑定到全局,还会污染全局变量,所以约定非常重要*/
 test("构造器调用模式 ");
 var A = function() {
     this.a = 1;
@@ -145,7 +146,7 @@ A.prototype.say.call(c);
 
 /*函数中额外另给的arguments参数并不是一个真正的数组,只是一个类似数组的对象包括可以下标取值,还有length属性,但缺少数组的方法*/
 
-/*一个函数总会返回一个值,乳沟没指定返回值,则返回undefined
+/*一个函数总会返回一个值,如果没指定返回值,则返回undefined
 如果函数前面加上new操作符,切返回值不是一个对象,则返回this(该新对象)*/
 test("测试函数返回值的改变 ");
 var A=function(){
@@ -160,6 +161,14 @@ console.log(c.a + c.b);
 
 /*给Object.prototype添加方法来使得该方法对所有的对象可用,同样的可以给Function String Array Json Date RegExp Boolean Number等的Prototype添加方法,使之对所有的对应对象都可以使用*/
 test("给对象原型添加属性,使之对其所有实例对象都可以使用")
+if(typeof Object.beget!=='function'){
+    Object.beget=function(obj){
+        var F=function(){};
+        F.prototype=obj;
+        return new F();
+    }
+}
+/*基于对象的简单继承*/
 Function.prototype.method=function(name,func){
     if(!this.prototype[name]){
         this.prototype[name]=func;
@@ -175,7 +184,13 @@ Number.method('integer',function(){
 console.log((-10/3).integer());
 
 /*通过给基本类型增加方法,可以大大提高语言的表现力,基本类型的原型是公共的结构,在类库混用时务必小心*/
-
+/*原型链测试*/
+test("原型链 原型");
+console.log(Object.__proto__===Function.prototype);
+console.log(Number.__proto__===Function.prototype);
+console.log(Function.__proto__===Function.prototype);
+console.log(Function.prototype.__proto__===Object.prototype);
+console.log(Object.prototype===null);
 /*递归*/
 test("汉诺塔问题 ");
 function 汉诺塔(disc,fir,sec,thr) {
@@ -266,7 +281,7 @@ type(sy5);
 
 /*作用域的好处是内部函数可以访问定义它们的外部函数的参数和变量(除了this和arguments)*/
 
-/*通过返回内部函数,使内部函数可以被外界访问,而内部函数又有访问其外部函数的参数和变量,而且有弊内部函数更长的生命周期*/
+/*通过返回内部函数,使函数内部可以被外界访问,而且内部函数有比外部函数更长的生命周期*/
 /*不但可以返回内部函数,还可以返回包含内部函数的对象,总是自己限制自己的思维*/
 /*闭包实例*/
 /*闭包访问的并不是外部函数参数和变量的一个拷贝,访问的是参数和变量的本身*/
@@ -359,7 +374,7 @@ console.log('&lt;&gt;&quot;'.deentityify());
 /*函数的级联*/
 /*有一些方法没有返回值,例如一些设置或修改对象的某个状态不用返回任何值的方法,让这些方法返回this而不是undefined,就可以启用级联*/
 /*级联可以产生具备很强表现力的接口*/
-test('级联 函数参数数组化')
+test('函数套用 函数参数数组化')
 Function.method('curry',function(){
     var slice=Array.prototype.slice;
     var args=slice.call(arguments);
@@ -478,4 +493,126 @@ for(var i=0;i<=11;i++){
 /*JavaScript提供了一套更为丰富的代码重用模式,可以模拟那些基于类的模式,同时也支持其它更具表现力的形式*/
 /*在基于类的语言中,对象是类的实例,并且类可以从另一个类继承.
 JavaScript是一门基于原型的语言,这意味着对象直接从其它对象继承*/
+
+/*伪类 构造器函数*/
+/*对伪类的继承的封装*/
+test('伪类 构造器函数封装')
+Function.method('inherits',function(Parent){
+    this.prototype=new Parent();
+    return this;
+});
+/*给Function.prototype添加的方法中的this指代调用对应方法的函数,且对所有函数对象可用*/
+/*inherits和method方法都返回this,这允许我们可以以级联的样式编程*/
+var Cat=function(name){
+    this.name=name||'cat';
+}.
+method('say',function(){
+    console.log(this.name+' miao miao miao');
+});
+var BigCat=function (name,age) {
+    this.age=age||20;
+    this.name=name||'bigCat';
+}.
+inherits(Cat).
+method('active',function(){
+    this.say();
+    console.log('抓老鼠');
+});
+
+var mao=new BigCat('aierlan',13);
+mao.active();
+
+/*在基于类的语言中,类的继承是代码是代码重用的的唯一方式,JavaScript中有更多更好的选择*/
+/*在一个纯粹的原型模式中,我们会摒弃类,转而专注域对象
+基于原型的继承在概念上更为简单:一个新对象可以继承旧对象的属性*/
+test('基于原型的继承 一个类继承另一个类');
+var cat={
+    name:'xiao mao',
+    say :()=>console.log('miao miao miao '),
+    active:()=>console.log('zhua lao shu')
+};
+var smallCat=Object.beget(cat);
+smallCat.name='small cat';
+smallCat.active=()=>console.log('sleep play');
+console.log(smallCat.name);
+smallCat.say();smallCat.active();
+/*通过Object.beget(),在通过差异化继承,定制一个新对象,指明它与所基于对象的区别*/
+/*原型函数化 用来处理私有属性 用闭包来解决*/
+test('原型继承的函数化');
+var mammal=function(spec,shared){
+    //shared共享的
+    var that=shared||{};
+    that.get_name=function(){
+        return spec.name;
+    };
+    that.says=function(){
+        return spec.saying || ' ';
+    };
+    return that;
+}
+var myMammal=mammal({name:'herb'});
+/*后面都不太懂,先写上以后再看*/
+/*原型继承函数化*/
+var cat=function(spec){
+    spec.saying=spec.saying||'nihao';
+    var that=mammal(spec);
+    that.doSomething=()=>console.log("special");
+    return that;
+};
+/*name saying属性完全私有的,只能通过特权方法去访问*/
+/*如果特权方法用于多处,可以分两步定义 function a(){};
+that.a=a;防止that属性更改后对原型造成伤害*/
+var myCat=cat({name:'ChengLei'});
+console.log(myCat.get_name());
+console.log(myCat.says());
+myCat.doSomething();
+
+/*函数化模式提供了了一个处理父类的方法的方法*/
+Object.method('superior',function(name){
+    var deal=this[name];
+    var that=this;
+    return function(){
+       return deal.apply(that,arguments);
+    };
+});//两个return保留对返回值的处理权限
+
+/*函数的部件 完全没看懂*/
+
+/*数组 JavaScript数组length没有上界,如果用大于length的下标来保存一个元素,length将会增大来容纳新元素*/
+/*设置更大的length如需给数组分配更多的空间,二八length设小将导致所有大于等于新length的属性被删除*/
+/*JavaScript数组其实就是对象 数组手术刀splice(起点,终点,添加的元素...)*/
+/*JavaScript许多特性借鉴自其它语言,语法借鉴自Java,函数借鉴域Scheme,原型继承借鉴于Self,正则表达式借鉴于Perl*/
+/*正则表达式是一门简单语言的语法规范.它以方法的形式被用于对字符串中信息进行查找,替换和提取操作*/
+/*可处理正则表达式的方法有regexp.exec,regexp.test,string.match,string.replace,string.search,string.split看相关教程,看不懂图*/
+
+/*JavaScript包含了少量可用在标准类型类型上的标准方法*/
+test('array.concat');
+/*concat方法返回一个新数组,它包含array的浅复制,并将一个或多个参数item附加在其后.如果item元素是一个数组,那么它的每个元素会被分别添加*/
+var a=['a','b','c',{name:'xiaoming',age:'20'}];
+var b=['e','f','g'];
+var c=a.concat(b,true);
+console.log(c);
+c[3].name='daming';
+console.log(a);
+/*注意在JavaScript中复杂对象都是浅拷贝,但是不包括String对象*/
+test('array.join');
+/*join方法把一个array构造成一个字符串,它将array中的每个元素构造成一个字符串,并用一个separator为分隔符把它们连接在一起,默认的separator是','.为了实现无间隔的连接,我们可以使用空字符串作为separator*/
+/*如果你想吧大量片段组装成一个字符串,把这些片段放到一个数组中并用join方法连接通常比+来连接快*/
+console.log(a.join());
+test('array.pop');
+/*pop和push方法使array象stack一样工作,pop方法移除数组最后一个元素,并返回该元素,如果array是空的,则返回undefined*/
+/*pop的可能实现*/
+/*Array.method("pop",function(){
+    return this.splice(this.length-1,1)[0];
+});*/
+test("array.push");
+/*push方法将一个或多个参数item附加到一个数组的尾部,会改变数组array本身,如果item是一个数组,它会将参数数组作为单个元素整个添加到数组中.它返回这个array的新length*/
+test('array.reverse');
+/*反转array中元素的顺序,会改变array*/
+test('array.shift');
+/*移除array中的第一个元素并返回该元素,如果array是空的则返回undefined,shift通常比pop慢的多*/
+test('array.unshift');
+/*在array中头部添加一个元素,并返回array的新length,对元素的操作方式同push*/
+test('array.slice');
+test('array.sort');
 
