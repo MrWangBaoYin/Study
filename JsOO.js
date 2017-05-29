@@ -19,7 +19,8 @@ console.log(a._age);
 /*a.age = 101;*/
 console.log(a.age);
 console.log('age' in a);
-// 等号后面的逻辑运算符  ||等于第一个为真的值,&&等于最后一个为真的值
+// 等号后面的逻辑运算符  ||等于第一个为真的值,如果都为假,等于最后一个值(遇真停)
+//&&等于最后一个为真的值,如果第一个为假,等于第一个值(遇假停)
 var c=a.nihao||a.buhao||a.aaa||a.age;
 console.log(c);
 

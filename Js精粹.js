@@ -55,19 +55,18 @@ d.say();
 
 function type(target){
     var a=Object.prototype.toString.call(target);
-    console.log(a);
     return a;
 }
 test('类型 ');
-type(继承于);
-type([1,3,4]);
-type(d);
-type(1);
-type('ni hao');
-type(null);
-type(undefined);
-type(true);
-type(new Date);
+console.log(type(继承于));
+console.log(type([1,3,4]));
+console.log(type(d));
+console.log(type(1));
+console.log(type('ni hao'));
+console.log(type(null));
+console.log(type(undefined));
+console.log(type(true));
+console.log(type(new Date));
 
 /*函数和对象的不同 函数特有:函数的上下文 函数的行为 函数创建时附带的prototype属性 */
 /*函数最与众不同之处在于它们可以被调用*/
@@ -158,7 +157,7 @@ var A=function(){
 }
 
 var c = new A();
-type(c);
+console.log(type(c));
 console.log(c.a + c.b);
 
 /*给Object.prototype添加方法来使得该方法对所有的对象可用,同样的可以给Function String Array Json Date RegExp Boolean Number等的Prototype添加方法,使之对所有的对应对象都可以使用*/
@@ -240,10 +239,10 @@ console.log(result(4));
 
 /*作用域*/
 test("作用域测试1");//函数声明优先级高于变量声明
-type(sy);
+console.log(type(sy));
 function sy(){}
 var sy = 1;
-type(sy); //动态变量的性质,上一步进行了赋值
+console.log(type(sy)); //动态变量的性质,上一步进行了赋值
 
 test("作用域测试2");
 sy2();//同名函数声明,越后面优先级越高
@@ -257,27 +256,27 @@ sy2();
 
 test("作用域测试3");//变量声明冲突无所谓的,未执行到赋值语句,变量都是undefined
 //注意,对于用var声明的变量,再起赋值语句前面调用时,它的值为undefined,如果没有用var声明的变量在其赋值语句之前调用会报错
-type(sy3);
+console.log(type(sy3));
 var sy3 = 1;
 var sy3 = null;
-type(sy3);
+console.log(type(sy3));
 
 test("作用域测试4");//就和普通变量没啥不同
-type(sy4);
+console.log(type(sy4));
 var sy4=function(){
     console.log("给变量赋值的匿名函数");
 }
-type(sy4);
+console.log(type(sy4));
 
 test("作用域测试5");
-type(sy5);
-/*type(aa);*/
+console.log(type(sy5));
+/*console.log(type(aa);*/
 
 var sy5=function aa(){
     console.log("给变量赋值而且有名字的函数");
 }
-type(sy5);
-/*type(aa);*///有名字也没法访问
+console.log(type(sy5));
+/*console.log(type(aa);*///有名字也没法访问
 
 /*JavaScript不支持块作用域,支持函数作用域*/
 
@@ -588,7 +587,21 @@ Object.method('superior',function(name){
 /*可处理正则表达式的方法有regexp.exec,regexp.test,string.match,string.replace,string.search,string.split看相关教程,看不懂图*/
 
 /*JavaScript包含了少量可用在标准类型类型上的标准方法*/
-test('array.concat');
+
+
+
+
+test('array.reverse');
+/*反转array中元素的顺序,会改变array*/
+test('array.shift');
+/*移除array中的第一个元素并返回该元素,如果array是空的则返回undefined,shift通常比pop慢的多*/
+test('array.unshift');
+/*在array中头部添加一个元素,并返回array的新length,对元素的操作方式同push*/
+test('array.slice');
+/*对于参数为负的情况,是从后面开始数*/
+
+
+test('array.concat源码');
 /*concat方法返回一个新数组,它包含array的浅复制,并将一个或多个参数item附加在其后.如果item元素是一个数组,那么它的每个元素会被分别添加*/
 var a=['a','b','c',{name:'xiaoming',age:'20'}];
 var b=['e','f','g'];
@@ -597,33 +610,13 @@ console.log(c);
 c[3].name='daming';
 console.log(a);
 /*注意在JavaScript中复杂对象都是浅拷贝,但是不包括String对象*/
-test('array.join');
-/*join方法把一个array构造成一个字符串,它将array中的每个元素构造成一个字符串,并用一个separator为分隔符把它们连接在一起,默认的separator是','.为了实现无间隔的连接,我们可以使用空字符串作为separator*/
-/*如果你想吧大量片段组装成一个字符串,把这些片段放到一个数组中并用join方法连接通常比+来连接快*/
-console.log(a.join());
-test('array.pop');
-/*pop和push方法使array象stack一样工作,pop方法移除数组最后一个元素,并返回该元素,如果array是空的,则返回undefined*/
-/*pop的可能实现*/
-/*Array.method("pop",function(){
-    return this.splice(this.length-1,1)[0];
-});*/
-test("array.push");
-/*push方法将一个或多个参数item附加到一个数组的尾部,会改变数组array本身,如果item是一个数组,它会将参数数组作为单个元素整个添加到数组中.它返回这个array的新length*/
-test('array.reverse');
-/*反转array中元素的顺序,会改变array*/
-test('array.shift');
-/*移除array中的第一个元素并返回该元素,如果array是空的则返回undefined,shift通常比pop慢的多*/
-test('array.unshift');
-/*在array中头部添加一个元素,并返回array的新length,对元素的操作方式同push*/
-test('array.slice');
-test('array.sort');
 
 var concat=function(){
     var a=[];
     var isArr=type([]);
 
     for(i=0;i<arguments.length;i++){
-        if(type(arguments[i])===type([])){
+        if(type(arguments[i])===isArr){
             array(arguments[i]);
         }
         else{
@@ -634,7 +627,7 @@ var concat=function(){
     function array(arr){
         var alen=a.length;
         var length=a.length+arr.length;
-        for(var i=a.length;i<length;i++){
+        for(var i=alen;i<length;i++){
             a[i]=arr[i-alen];
         }
     }
@@ -647,4 +640,190 @@ var c = concat(a,b,{name:'aaa'},'nihao');
 console.log(c);
 console.log(d);
 console.log(_.isEqual(d,c));
-console.log(type(type([]))===type(''));
+test('array.join');
+/*join方法把一个array构造成一个字符串,它将array中的每个元素构造成一个字符串,并用一个separator为分隔符把它们连接在一起,默认的separator是','.为了实现无间隔的连接,我们可以使用空字符串作为separator*/
+/*如果你想吧大量片段组装成一个字符串,把这些片段放到一个数组中并用join方法连接通常比+来连接快*/
+console.log(a.join());
+/*其实join()里面填入"</option><option>"的意思就是为数组每个元素前后都添加上
+</option>北京市<option></option>上海市<option>.*/
+var array=["北京市","上海市","广州市","深圳市"];
+var html="<option>" + array.join("</option><option>")+ "</option>";
+console.log(html);
+var join=function(arr,separator){
+    var a='';
+    for(var i=0;i<arr.length;i++){
+        a+=arr[i].toString();
+        if(i!=arr.length-1){
+            a+=separator;
+        }
+    }
+    return a;
+}
+var html1='<option>'+join(array,'</option><option>')+'</option>';
+console.log(html1);
+console.log(_.isEqual(html,html1));
+
+test('array.pop');
+/*pop和push方法使array象stack一样工作,pop方法移除数组最后一个元素,并返回该元素,如果array是空的,则返回undefined*/
+/*pop的可能实现*/
+/*Array.method("pop",function(){
+    return this.splice(this.length-1,1)[0];
+});*/
+var pop=function(arr){
+    var a=arr[arr.length-1];
+    arr.length-=1;
+    return a;
+}
+var b=a.slice();
+var c=a.pop();
+var d=pop(b);
+console.log(_.isEqual(c,d));
+
+test("array.push");
+/*push方法将一个或多个参数item附加到一个数组的尾部,会改变数组array本身,如果item是一个数组,它会将参数数组作为单个元素整个添加到数组中.它返回这个array的新length*/
+var push=function(arr){
+    for(var i=1;i<arguments.length;i++){
+        arr[length]=arguments[i];
+    }
+    return arr.length;
+}
+var sy={};
+console.log(typeof Number('3234'));
+
+(function(){
+    console.log(arguments);
+}('1','2',3,4,5));
+/*???想实现下用对象模拟数组,需要$[]$操作符的重载,想到的方式是先预处理,把$[]$置换为对应的函数...
+函数如何实现的...以后再说找时间去学习汇编*/
+/*不用任何数组的东西,完全用对象实现*/
+/*var array=function(){};
+array.method('toString',function(){
+    var start='$[';
+    var end  =']$';
+    for(var x in this){
+        start+=x.toString();
+    }
+
+});
+var a={};
+a.toString=function(){return 'nihao';};
+console.log(a);
+var c={};
+c.a=a;
+console.log(c);
+for(var x in c){
+    if(c.hasOwnProperty(x))
+        console.log(c[x]);
+}*/ //以后再说,想的头痛
+test('array.sort');//sort改变原数组
+test('array sort插入排序')
+var insert_sort=function(arr,func){
+    var a=[];
+    a[0]=arr[0];
+    for(var i=1;i<arr.length;i++){
+        var num=loopCompare(arr[i]);
+        if(num===a.length){
+            a[a.length]=arr[i];
+        }
+        else{
+            loopBack(num);
+            a[num]=arr[i];
+        }
+    }
+    return a;
+    function loopCompare(ele){
+        for(var i=0;i<a.length;i++){
+            if(func(ele,a[i])<0)
+                return i;
+        }
+        return i;
+    }
+    function loopBack(num){
+        a.length+=1;
+        for(var i=a.length-1;i>num;i--){
+            a[i]=a[i-1];
+        }
+    }
+};
+
+var a=[7,4,5,7,2,9,4];
+var b=insert_sort(a,function(a,b){
+    return a-b;
+});
+console.log(a);
+console.log(b);
+//再次注意,在JavaScript中简单对象赋值时是复制,复杂对象赋值是是引用,一开始使用了swap函数,完全不知道错在哪里
+test('array.sort希尔排序');
+var shell_sort=function(arr,func){
+    var step=Math.floor(arr.length/2);
+    for(;step>0;step=Math.floor(step/2))
+    {
+        for(var i=step;i<arr.length;i++){
+            loop_step(i,step);
+        }
+    }
+
+    function loop_step(index,step){
+        for(var j=index-step;j>=0&&func(arr[j],arr[j+step])>0;j-=step){
+                var temp=arr[j];
+                arr[j]=arr[j+step];
+                arr[j+step]=temp;
+        }
+    }
+
+}
+function shellsort(arr,func)//K&R 想不出这么好的结构,记住吧
+{
+    var gap,i,j,temp;
+    gap=Math.floor(arr.length/2);
+    for(;gap>0;gap=Math.floor(gap/2))
+    {
+        for(i=gap;i<arr.length;i++)
+        {
+            for(j=i-gap;j>=0&&func(arr[j],arr[j+gap])>0;j-=gap)
+            {
+                temp=arr[j];
+                arr[j]=arr[j+gap];
+                arr[j+gap]=temp;
+            }
+        }
+    }
+}
+shell_sort(a,function(a,b){
+    return a-b;
+});
+console.log(a);
+test('array.sort快速排序');
+var quick_sort=function(arr,func,start,end){
+    var start=start||0;
+    console.log(start);
+    var end=end||arr.length-1;
+    console.log(end);
+    var middle=Math.floor(end/2);
+    var lower=start;
+    var upper=end;
+    do{
+        while(lower<middle&&func(arr[lower],arr[middle])<0) lower++;
+        var temp=arr[lower];
+            arr[lower]=arr[upper];
+            arr[upper]=temp
+        while(upper>middle&&func(arr[upper],arr[middle])>0)
+            upper--;
+            temp=arr[lower];
+            arr[lower]=arr[upper];
+            arr[upper]=temp
+
+
+    }while(lower<=upper);
+
+        quick_sort(arr,func,start,middle-1);
+
+        quick_sort(arr,func,middle+1,end);
+
+}
+var a=[7,4,5,7,2,9,4];
+/*quick_sort(a,function(a,b){
+    return a-b;
+});
+*/
+console.log(a=1&&2);
