@@ -54,7 +54,9 @@ var d = 继承于(c);
 d.say();
 
 function type(target){
-    console.log(Object.prototype.toString.call(target));
+    var a=Object.prototype.toString.call(target);
+    console.log(a);
+    return a;
 }
 test('类型 ');
 type(继承于);
@@ -616,3 +618,33 @@ test('array.unshift');
 test('array.slice');
 test('array.sort');
 
+var concat=function(){
+    var a=[];
+    var isArr=type([]);
+
+    for(i=0;i<arguments.length;i++){
+        if(type(arguments[i])===type([])){
+            array(arguments[i]);
+        }
+        else{
+            a[a.length]=arguments[i];
+        }
+    }
+    return a;
+    function array(arr){
+        var alen=a.length;
+        var length=a.length+arr.length;
+        for(var i=a.length;i<length;i++){
+            a[i]=arr[i-alen];
+        }
+    }
+}
+
+var a=[1,2,3,4,5];
+var b=['a','b','c','d','e'];
+var d = a.concat(b,{name:'aaa'},'nihao');
+var c = concat(a,b,{name:'aaa'},'nihao');
+console.log(c);
+console.log(d);
+console.log(_.isEqual(d,c));
+console.log(type(type([]))===type(''));
