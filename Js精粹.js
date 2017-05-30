@@ -794,36 +794,42 @@ shell_sort(a,function(a,b){
 });
 console.log(a);
 test('array.sort快速排序');
-var quick_sort=function(arr,func,start,end){
-    var start=start||0;
-    console.log(start);
-    var end=end||arr.length-1;
-    console.log(end);
-    var middle=Math.floor(end/2);
-    var lower=start;
-    var upper=end;
-    do{
-        while(lower<middle&&func(arr[lower],arr[middle])<0) lower++;
-        var temp=arr[lower];
-            arr[lower]=arr[upper];
-            arr[upper]=temp
-        while(upper>middle&&func(arr[upper],arr[middle])>0)
-            upper--;
-            temp=arr[lower];
-            arr[lower]=arr[upper];
-            arr[upper]=temp
-
-
-    }while(lower<=upper);
-
-        quick_sort(arr,func,start,middle-1);
-
-        quick_sort(arr,func,middle+1,end);
-
+var quick_sort=function(arr,func){
+    run(arr,0,arr.length-1);
+    function run(arr,left,right)
+    {
+        var i,j;
+        var middle,iTemp;
+        i = left;
+        j = right;
+        middle = Math.floor((left+right)/2);
+        middle = arr[middle]; //求中间值
+        do{
+            while((arr[i]<middle) && (i<right))//从左扫描大于中值的数
+                i++;
+            while((arr[j]>middle) && (j>left))//从右扫描大于中值的数
+                j--;
+            if(i<=j)//找到了一对值
+            {
+                //交换
+                iTemp = arr[i];
+                arr[i] = arr[j];
+                arr[j] = iTemp;
+                i++;
+                j--;
+            }
+        }while(i<=j);//如果两边扫描的下标交错，就停止（完成一次）
+        //当左边部分有值(left<j)，递归左半边
+        if(left<j)
+            run(arr,left,j);
+        //当右边部分有值(right>i)，递归右半边
+        if(right>i)
+            run(arr,i,right);
+    }
 }
 var a=[7,4,5,7,2,9,4];
-/*quick_sort(a,function(a,b){
+quick_sort(a,function(a,b){
     return a-b;
 });
-*/
-console.log(a=1&&2);
+
+console.log(a);
