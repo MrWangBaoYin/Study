@@ -717,62 +717,32 @@ for(var x in c){
 }*/ //以后再说,想的头痛
 test('array.sort');//sort改变原数组
 test('array sort插入排序')
-var insert_sort=function(arr,func){
-    var a=[];
-    a[0]=arr[0];
-    for(var i=1;i<arr.length;i++){
-        var num=loopCompare(arr[i]);
-        if(num===a.length){
-            a[a.length]=arr[i];
+var insert_sort=function(arr,func)
+{
+    var i,j,temp;
+    for(i=1;i<arr.length;i++)
+    {
+        temp=arr[i];
+        j=i-1;
+        while(j>=0 && func(arr[j],temp)>0)
+        {
+            arr[j+1]=arr[j];
+            j--;
         }
-        else{
-            loopBack(num);
-            a[num]=arr[i];
-        }
+        arr[j+1]=temp;
     }
-    return a;
-    function loopCompare(ele){
-        for(var i=0;i<a.length;i++){
-            if(func(ele,a[i])<0)
-                return i;
-        }
-        return i;
-    }
-    function loopBack(num){
-        a.length+=1;
-        for(var i=a.length-1;i>num;i--){
-            a[i]=a[i-1];
-        }
-    }
-};
+}
 
 var a=[7,4,5,7,2,9,4];
 var b=insert_sort(a,function(a,b){
     return a-b;
 });
 console.log(a);
-console.log(b);
+
 //再次注意,在JavaScript中简单对象赋值时是复制,复杂对象赋值是是引用,一开始使用了swap函数,完全不知道错在哪里
 test('array.sort希尔排序');
-var shell_sort=function(arr,func){
-    var step=Math.floor(arr.length/2);
-    for(;step>0;step=Math.floor(step/2))
-    {
-        for(var i=step;i<arr.length;i++){
-            loop_step(i,step);
-        }
-    }
 
-    function loop_step(index,step){
-        for(var j=index-step;j>=0&&func(arr[j],arr[j+step])>0;j-=step){
-                var temp=arr[j];
-                arr[j]=arr[j+step];
-                arr[j+step]=temp;
-        }
-    }
-
-}
-function shellsort(arr,func)//K&R 想不出这么好的结构,记住吧
+var shell_sort=function(arr,func)//K&R 想不出这么好的结构,记住吧
 {
     var gap,i,j,temp;
     gap=Math.floor(arr.length/2);
@@ -789,42 +759,40 @@ function shellsort(arr,func)//K&R 想不出这么好的结构,记住吧
         }
     }
 }
+var a=[7,4,5,7,2,9,4];
 shell_sort(a,function(a,b){
     return a-b;
 });
 console.log(a);
 test('array.sort快速排序');
-var quick_sort=function(arr,func){
-    run(arr,0,arr.length-1);
-    function run(arr,left,right)
+var quick_sort=function(arr,func,low,high)
+{
+    high=high||arr.length-1;
+    low=low||0;
+    var i,j,base;
+    if(low<high)
     {
-        var i,j;
-        var middle,iTemp;
-        i = left;
-        j = right;
-        middle = Math.floor((left+right)/2);
-        middle = arr[middle]; //求中间值
-        do{
-            while((arr[i]<middle) && (i<right))//从左扫描大于中值的数
-                i++;
-            while((arr[j]>middle) && (j>left))//从右扫描大于中值的数
-                j--;
-            if(i<=j)//找到了一对值
-            {
-                //交换
-                iTemp = arr[i];
-                arr[i] = arr[j];
-                arr[j] = iTemp;
-                i++;
-                j--;
-            }
-        }while(i<=j);//如果两边扫描的下标交错，就停止（完成一次）
-        //当左边部分有值(left<j)，递归左半边
-        if(left<j)
-            run(arr,left,j);
-        //当右边部分有值(right>i)，递归右半边
-        if(right>i)
-            run(arr,i,right);
+       base=arr[low];
+       i=low;
+       j=high;
+       while(i<j)
+       {
+          while(i<j && func(arr[j],base)>=0)
+              j--;
+          if(i<j){
+              arr[i]=arr[j];
+              i++;
+          }
+          while(i<j && func(arr[i],base)<=0)
+              i++;
+          if(i<j){
+              arr[j]=arr[i];
+              j--;
+          }
+       }
+       arr[i]=base;//i==j 吧base放在中间
+       quick_sort(arr,func,low,i-1);
+       quick_sort(arr,func,i+1,high);
     }
 }
 var a=[7,4,5,7,2,9,4];
@@ -833,3 +801,134 @@ quick_sort(a,function(a,b){
 });
 
 console.log(a);
+test('array.sort归并排序');//排序任意数组和基本对象的混合
+var merge=function(arr1,arr2){
+    var func;
+    var Arr=[];
+    var other=[];
+    for(var i=0;i<arguments.length;i++){
+        if(type(arguments[i])===type(function(){})){
+            func=arguments[i];
+        }
+        else if(type(arguments[i])===type([])){
+            Arr.push(arguments[i]);
+        }
+        else{
+            other.push(arguments[i]);
+        }
+    }
+    if(!func){func=compare;}//如果没有比较函数,就使用默认比较参数
+    var result=[];
+    if(Arr.length){//防止参数中没有数组产生的异常
+        result=map(Arr);
+        result=reduce(result);
+    }
+    if(other.length){//如果参数中有单独的简单对象,合并为一个数组并排序,在归并到结果中
+        return twoArrMerge(result,other.sort(func));
+    }
+    return result;
+    function map(arr){//先把没一个数组参数分别进行排序
+        var temp=[];
+        for(var i=0;i<arr.length;i++){
+            temp.push(arr[i].sort(func));
+        }
+        return temp;
+    }
+    function reduce(arr){
+        var temp;//把多个排序好的数组归并为一个数组
+        if(arr.length===1){
+            return arr[0];//如果参数中只有一个数组直接返回这个数组
+        }
+        for(var i=0;i<arr.length;i++){
+            if(i===0){
+               temp=twoArrMerge(arr[i],arr[i+1]);
+               i++;
+            }
+            else{
+                temp=twoArrMerge(temp,arr[i]);
+            }
+        }
+        return temp;
+    }
+
+    function twoArrMerge(arr1,arr2){
+        var index1=0,index2=0;
+        var target=[];
+        while(index1<arr1.length&&index2<arr2.length){
+            if(func(arr1[index1],arr2[index2])<=0){
+                target.push(arr1[index1]);
+                index1++;
+            }
+            else{
+                target.push(arr2[index2]);
+                index2++;
+            }
+        }
+        if(index1===arr1.length){
+            while(index2<arr2.length){
+                target.push(arr2[index2]);
+                index2++;
+            }
+        }
+        if(index2===arr2.length){
+            while(index1<arr1.length){
+                target.push(arr1[index1]);
+                index1++;
+            }
+        }
+        return target;
+    }
+    function compare(a,b){
+        if(a===b) return 0;
+        if(typeof a===typeof b){
+            if(typeof a==='string'){
+                var c=a.toUpperCase();
+                var d=b.toUpperCase();
+                return c<d?-1:1;
+            }
+            return a<b?-1:1;
+        }
+        return typeof a<typeof b?-1:1;
+    }
+}
+var a=[7,4,5,7,2,9,4];
+var b=['a','e','g','sd','sdf','dsf','gadf','df','dfasd','fad','f'];
+var c=merge(a,b,'sdfsd',1000,243,'zzz');
+console.log(c);
+var d=merge(a);
+console.log(a);
+var e=merge('nihao',230,'sdf',90);
+console.log(e);
+
+
+test('排序扩展 复杂对象数组排序');
+var by=function(name,func){
+    return function(o,p){
+        var a=o,b=p;
+        if(o&&p&&typeof o==='object'&&typeof p==='object'){
+            a=o[name];
+            b=p[name];
+        }
+        if(a===b){
+            return typeof func==='function'?func(a,b):0;
+        }
+        if(typeof a===typeof b){
+            if(typeof a==='string'){
+                var c=a.toUpperCase();
+                var d=b.toUpperCase();
+                return c<d?-1:1;
+            }
+            return a<b?-1:1;
+        }
+        return typeof a<typeof b?-1:1;
+    }
+}
+var a=[
+    {first:'joe',last:'Besser'},
+    {first:'moe',last:'Howard'},
+    {first:'joe',last:'Derite'},
+    {first:'shemp',last:'Fine'},
+    {first:'curly',last:'Howard'}
+];
+var b=merge(a,by('first',by('last')));
+console.log(b);
