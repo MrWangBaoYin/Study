@@ -9,14 +9,24 @@ function 拷贝对象(obj){
     return a;
 }
 var test = (function(){
+    var all=[];
     var num = 1;
     var b ='一一一一一一一一一一一';
     b = b + b + b;
-    return function (str) {
-        var a = '第'+num+'次测试: '+str+' ';
-        console.log(a + b.slice(a.length));
+    var target=function(str) {
+        var number=num>=10?num.toString():'0'+num;
+        var a = '第'+number+'次测试: '+str+' ';
+        var result = a + b.slice(a.length);
+        console.log(result);
+        all.push(result);
         num++;
     };
+    target.printAll=function(){
+        for(var i=0;i<all.length;i++){
+            console.log(all[i]);
+        }
+    }
+    return target;
 }());
 var a={
     name:'xiao ming',
@@ -539,7 +549,7 @@ console.log(smallCat.name);
 smallCat.say();smallCat.active();
 /*通过Object.beget(),在通过差异化继承,定制一个新对象,指明它与所基于对象的区别*/
 /*原型函数化 用来处理私有属性 用闭包来解决*/
-test('原型继承的函数化');
+test('原型继承的函数化 ');
 var mammal=function(spec,shared){
     //shared共享的
     var that=shared||{};
@@ -591,18 +601,16 @@ Object.method('superior',function(name){
 
 
 
-test('array.reverse');
+test('数组方法:反转');
 /*反转array中元素的顺序,会改变array*/
-test('array.shift');
+test('数组方法:队列移除');
 /*移除array中的第一个元素并返回该元素,如果array是空的则返回undefined,shift通常比pop慢的多*/
-test('array.unshift');
+test('数组方法:队列添加');
 /*在array中头部添加一个元素,并返回array的新length,对元素的操作方式同push*/
-test('array.slice');
-/*对于参数为负的情况,是从后面开始数*/
 
 
-test('array.concat源码');
-/*concat方法返回一个新数组,它包含array的浅复制,并将一个或多个参数item附加在其后.如果item元素是一个数组,那么它的每个元素会被分别添加*/
+
+
 var a=['a','b','c',{name:'xiaoming',age:'20'}];
 var b=['e','f','g'];
 var c=a.concat(b,true);
@@ -610,9 +618,10 @@ console.log(c);
 c[3].name='daming';
 console.log(a);
 /*注意在JavaScript中复杂对象都是浅拷贝,但是不包括String对象*/
-
+test('数组方法:数组组合');
+/*concat方法返回一个新数组,它包含array的浅复制,并将一个或多个参数item附加在其后.如果item元素是一个数组,那么它的每个元素会被分别添加*/
 var concat=function(){
-    var a=[];
+    var target=[];
     var isArr=type([]);
 
     for(i=0;i<arguments.length;i++){
@@ -620,15 +629,15 @@ var concat=function(){
             array(arguments[i]);
         }
         else{
-            a[a.length]=arguments[i];
+            target[target.length]=arguments[i];
         }
     }
-    return a;
+    return target;
     function array(arr){
-        var alen=a.length;
-        var length=a.length+arr.length;
+        var alen=target.length;
+        var length=target.length+arr.length;
         for(var i=alen;i<length;i++){
-            a[i]=arr[i-alen];
+            target[i]=arr[i-alen];
         }
     }
 }
@@ -640,7 +649,7 @@ var c = concat(a,b,{name:'aaa'},'nihao');
 console.log(c);
 console.log(d);
 console.log(_.isEqual(d,c));
-test('array.join');
+test('数组方法:转字符串');
 /*join方法把一个array构造成一个字符串,它将array中的每个元素构造成一个字符串,并用一个separator为分隔符把它们连接在一起,默认的separator是','.为了实现无间隔的连接,我们可以使用空字符串作为separator*/
 /*如果你想吧大量片段组装成一个字符串,把这些片段放到一个数组中并用join方法连接通常比+来连接快*/
 console.log(a.join());
@@ -663,7 +672,7 @@ var html1='<option>'+join(array,'</option><option>')+'</option>';
 console.log(html1);
 console.log(_.isEqual(html,html1));
 
-test('array.pop');
+test('数组方法:栈移除');
 /*pop和push方法使array象stack一样工作,pop方法移除数组最后一个元素,并返回该元素,如果array是空的,则返回undefined*/
 /*pop的可能实现*/
 /*Array.method("pop",function(){
@@ -679,7 +688,7 @@ var c=a.pop();
 var d=pop(b);
 console.log(_.isEqual(c,d));
 
-test("array.push");
+test("数组方法:栈添加");
 /*push方法将一个或多个参数item附加到一个数组的尾部,会改变数组array本身,如果item是一个数组,它会将参数数组作为单个元素整个添加到数组中.它返回这个array的新length*/
 var push=function(arr){
     for(var i=1;i<arguments.length;i++){
@@ -715,8 +724,8 @@ for(var x in c){
     if(c.hasOwnProperty(x))
         console.log(c[x]);
 }*/ //以后再说,想的头痛
-test('array.sort');//sort改变原数组
-test('array sort插入排序')
+test('数组方法:排序');//sort改变原数组
+test('数组排序:插入排序的实现')
 var insert_sort=function(arr,func)
 {
     var i,j,temp;
@@ -740,7 +749,7 @@ var b=insert_sort(a,function(a,b){
 console.log(a);
 
 //再次注意,在JavaScript中简单对象赋值时是复制,复杂对象赋值是是引用,一开始使用了swap函数,完全不知道错在哪里
-test('array.sort希尔排序');
+test('数组排序:希尔排序的实现');
 
 var shell_sort=function(arr,func)//K&R 想不出这么好的结构,记住吧
 {
@@ -764,7 +773,7 @@ shell_sort(a,function(a,b){
     return a-b;
 });
 console.log(a);
-test('array.sort快速排序');
+test('数组排序:快速排序的实现');
 var quick_sort=function(arr,func,low,high)
 {
     high=high||arr.length-1;
@@ -801,7 +810,7 @@ quick_sort(a,function(a,b){
 });
 
 console.log(a);
-test('array.sort归并排序');//排序任意数组和基本对象的混合
+test('数组排序:归并排序的实现');//排序任意数组和基本对象的混合
 var merge=function(arr1,arr2){
     var func;
     var Arr=[];
@@ -817,6 +826,7 @@ var merge=function(arr1,arr2){
             other.push(arguments[i]);
         }
     }
+
     if(!func){func=compare;}//如果没有比较函数,就使用默认比较参数
     var result=[];
     if(Arr.length){//防止参数中没有数组产生的异常
@@ -827,6 +837,8 @@ var merge=function(arr1,arr2){
         return twoArrMerge(result,other.sort(func));
     }
     return result;
+
+
     function map(arr){//先把没一个数组参数分别进行排序
         var temp=[];
         for(var i=0;i<arr.length;i++){
@@ -932,3 +944,83 @@ var a=[
 ];
 var b=merge(a,by('first',by('last')));
 console.log(b);
+
+test("数组方法:数组的增删");
+/*splice方法从array中移除一个或者多个元素,并用新的item替换它们.array.splice(start,deleteCount,...item),start移除元素的开始位置,deleteCount要移除元素的个数,item即将插入到所移除元素的位置上*/
+var splice=function(start,count){
+    var addArr=[];
+    var index=start+count;
+    for(var i=2;i<arguments.length;i++){
+        addArr.push(arguments[i]);
+    }
+
+    var middle=this.slice(start,index);
+    var tail=this.slice(index);
+    console.log(tail);
+    /*问题 :this=head.concat(addArr).concat(tail);为什么不行*/
+    for(i=start;i<=index;i++){
+        this[i]=addArr[i-start];
+    }
+    var temp=i-1;
+    for(i=0;i<tail.length;i++){
+        this[i+temp]=tail[i];
+    }
+    return middle;
+}
+
+test('数组方法:数组截取');
+/*对于参数为负的情况,是从后面开始数*/
+/*截取数组的长度为后面的值减去前面值的差例如slice(2,4)只会截取第二个第三个元素*/
+var slice=function(arr,start,end){
+
+    start=start||0;
+    end  =end||arr.length;
+    if(start<0){
+        start=arr.length+start;
+    }
+    if(end<0){
+        end=arr.length+end;
+    }
+
+    var target=[];
+    for(var i=start;i<end;i++){
+        target.push(arr[i]);
+    }
+    return target;
+}
+
+
+var a=[7,4,5,7,2,9,4];
+console.log(a.slice(-5,-1));
+console.log(slice(a,-5,-1));
+console.log(a.slice(2,4));
+console.log(slice(a,2,4));
+console.log(a.splice(3,3,'a','b','c'));
+console.log(a);
+console.log(a.splice(3,3,7,2,9));
+console.log(a);
+var temp=Array.prototype.splice;
+Array.prototype.splice=splice;
+
+var b;
+console.log(a.splice(3,3,'a','b','c'));
+console.log(a);
+console.log(a.splice(3,3,7,2,9));
+console.log(a);
+
+Array.prototype.splice=temp;
+
+/*函数方法*/
+test('函数方法:更改绑定对象');
+/*function.apply/call 传递一个将被绑定到this上的对象*/
+test("函数属性");/*apply call caller bind length name*/
+test("数字属性");
+/*.toExponential()把数字转换为一个指数形式的字符串,可选参数控制小数点后的位数,值必须处于0到20之间*/
+/*.toFixed()方法把数字转换为一个十进制形式的字符串,可选参数控制小数点后的位数*/
+/*.toPrecision()把数字转换为一个十进制形式的字符串,可选参数控制有效数字的位数*/
+/*.toString()把数字转换为一个字符串,可选参数控制基数,必须在2-36之间,默认为10*/
+test('字符串属性');
+/*charAt返回在string中POS处的字符串,如果POS小于0或者大于string.length,会返回空字符串,JavaScript没有字符类型,返回的是包含一个字符的字符串*/
+/*string.charCodeAt返回的是在POS位置字符的编码*/
+
+test.printAll();
