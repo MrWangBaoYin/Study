@@ -1021,6 +1021,38 @@ test("数字属性");
 /*.toString()把数字转换为一个字符串,可选参数控制基数,必须在2-36之间,默认为10*/
 test('字符串属性');
 /*charAt返回在string中POS处的字符串,如果POS小于0或者大于string.length,会返回空字符串,JavaScript没有字符类型,返回的是包含一个字符的字符串*/
-/*string.charCodeAt返回的是在POS位置字符的编码*/
-
+/*string.charCodeAt返回的是在POS位置字符的编码,如果POS小于0或或者大于实际字符串的长度,返回NaN*/
+/*string.concat()参数为多个字符串,把所有的字符串连接在一起,一般不用,用+更方便*/
+/*string.indexOf()在一个字符串内查找另一个字符串,如果找到返回第一个匹配字符的位置,否则返回-1,可选参数position,可设置从string的某个指定位置开始查找*/
+/*string.lastIndexOf()和indexOf类似,只不过他是从字符串的末尾开始查找而不是开头*/
+/*string.localeCompare(that),比较两个字符串,如果string比that小返回负数,如果相等返回0*/
+test('字符串的本地比较规则');
+var a=['aaa','AAA','Aa','aa'];
+a.sort(function(c,d){
+    return c.localeCompare(d);
+});
+console.log(a);
+/*string.match(regexp)匹配正则表达式所匹配的字符串,根据g标示来决定如何匹配.如果没有g标示,返回一个数组0 匹配的字符串1 字符串出现位置的下标2 string 而且只匹配一次就停止,如果没有配到返回null.如果有g标示,则全部匹配,返回包含所有匹配字符串的数组,如果没有没有返回null*/
+/*string.replace(search,replace)对string进行查找和替换的操作,并返回一个新字符串,search可以是一个字符串或者正则表达式,字符串和没g标示的正则表达式只会匹配一次,带g的正则表达式则匹配所有.replace对匹配的字符串进行替换,可以是字符串或者一个函数,对匹配字符串进行操作,函数接收的参数为第一个参数为整个被匹配的文本,第二个参数是分组1匹配的文本,下一个参数是分组2匹配的文本,依此递推*/
+/*string.search()同indexOf类似,但它只接受一个正则对象作为参数而不是一个字符串,匹配到返回首字符出现的位置,如果没有返回-1,会忽略正则表达式的g标示,而且没有position参数*/
+/*string.slice()类似于数组的slice方法*/
+/*string.split(separator,limit)把string分割成片段来创建一个字符串数组,可选参数limit可以限制被分割片段的数量,separator可以是一个字符串或者一个正则表达式.*/
+test('字符串切割为字符串数组');
+/*如果separator是一空字符串,将返回一个单字符的数组*/
+var a='0123456';
+console.log(a.split('',4));
+/*否则会查找string中所有出现separator的地方,分隔两边的字符串*/
+var b='192.168.1.201';
+console.log(b.split('.'));
+var c='|a|b|c|';
+console.log(c.split('|'));
+var d='a,b c d    ;c ';
+console.log(d.split(/,|;|\s*/));
+console.log(d.split(/(,|;|\s*)/));//来自分组被捕获的文本精会被包含在分割后的数组中
+/*string.substring()同slice只是不能处理负参数*/
+/*string.toUpperCase() string.toLowerCase()*/
+/*String.fromCharCode()从一串数字中返回一个字符串*/
+test('从一串数字中返回一个字符串');
+console.log(String.fromCharCode(67,97,116));
+/*JavaScript中的位操作非常慢*/
 test.printAll();
