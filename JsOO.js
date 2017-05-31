@@ -124,5 +124,5 @@ Array Function Json Date RegExp Error 等*/
 /*在构造器层面上,Function是顶点,在原型链层面上null是顶点*/
 
 /*instranceOf 关键字 判段对象是否为某个函数的实例*/
-http://www.oschina.net/question/565065_86370?sort=time
-
+/*http://www.oschina.net/question/565065_86370?sort=time
+*/

@@ -1,9 +1,10 @@
 /*对象通过引用传递,它们永远不会拷贝*/
+'use strick';
 var Y = require('underscore');
 var _ = Y._; //在浏览器端验证时需要被注释
-function 拷贝对象(obj){
-    var a = {};
-    for(var x in obj){
+function copyObject(obj){
+    var a = {}, x;
+    for ( x in obj){
         a[x] = obj[x]
     }
     return a;
@@ -22,7 +23,7 @@ var test = (function(){
         num++;
     };
     target.printAll=function(){
-        for(var i=0;i<all.length;i++){
+        for (var i=0;i<all.length;i++){
             console.log(all[i]);
         }
     }
@@ -42,7 +43,7 @@ var b = a;
 b.name = 'da ming';
 console.log(a.name);
 
-var c = 拷贝对象(a);
+var c = copyObject(a);
 test("拷贝对象 ");
 c.name = 'xiao hong';
 console.log(a.name);
@@ -239,7 +240,7 @@ var factorial=function factorial(i,a){
 /*尾递归优化*/
 
 var result=function (i,a) {
-    for(a=a||1;i>=2;i--)
+    for (a=a||1;i>=2;i--)
         a=a*i;
     return a;
 }
@@ -332,7 +333,7 @@ var fade=function(node){
 /*设置节点事件处理程序的两种方式*/
 test("节点事件处理程序 浏览器端")
 var add_the_handles1=function(nodes,event){
-    for(var i=0;i<nodes.length;i++){
+    for (var i=0;i<nodes.length;i++){
         nodes[i]['on'+event]=(function (num) {
             return ()=>console.log(num);
         }(i));
@@ -340,7 +341,7 @@ var add_the_handles1=function(nodes,event){
 }
 
 var add_the_handles2=function(nodes,event){
-    for(var i=0;i<nodes.length;i++){
+    for (var i=0;i<nodes.length;i++){
         (function(num){
             nodes[i]['on'+event]=function () {
                 console.log(num);
@@ -445,7 +446,7 @@ var 记忆斐波那契数列=(function(){
         count:()=>console.log(count)
     }
 }());
-for(var i=0;i<=11;i++){
+for (var i=0;i<=11;i++){
     console.log(i+':'+记忆斐波那契数列.compute(i));
 }
 记忆斐波那契数列.count();
@@ -489,14 +490,14 @@ test('记忆函数一般化验证1斐波那契数列');
 var fibonacci=memoizer([0,1],function(shell,num){
     return shell(num-1)+shell(num-2);
 });
-for(var i=0;i<=11;i++){
+for (var i=0;i<=11;i++){
     console.log(i+':'+fibonacci(i));
 }
 test('记忆函数一般化验证2阶乘');
 var factorial=memoizer([1],function(shell,num){
     return num*shell(num-1);
 });
-for(var i=0;i<=11;i++){
+for (var i=0;i<=11;i++){
     console.log(i+':'+factorial(i));
 }
 
@@ -624,7 +625,7 @@ var concat=function(){
     var target=[];
     var isArr=type([]);
 
-    for(i=0;i<arguments.length;i++){
+    for (i=0;i<arguments.length;i++){
         if(type(arguments[i])===isArr){
             array(arguments[i]);
         }
@@ -636,7 +637,7 @@ var concat=function(){
     function array(arr){
         var alen=target.length;
         var length=target.length+arr.length;
-        for(var i=alen;i<length;i++){
+        for (var i=alen;i<length;i++){
             target[i]=arr[i-alen];
         }
     }
@@ -660,7 +661,7 @@ var html="<option>" + array.join("</option><option>")+ "</option>";
 console.log(html);
 var join=function(arr,separator){
     var a='';
-    for(var i=0;i<arr.length;i++){
+    for (var i=0;i<arr.length;i++){
         a+=arr[i].toString();
         if(i!=arr.length-1){
             a+=separator;
@@ -691,7 +692,7 @@ console.log(_.isEqual(c,d));
 test("数组方法:栈添加");
 /*push方法将一个或多个参数item附加到一个数组的尾部,会改变数组array本身,如果item是一个数组,它会将参数数组作为单个元素整个添加到数组中.它返回这个array的新length*/
 var push=function(arr){
-    for(var i=1;i<arguments.length;i++){
+    for (var i=1;i<arguments.length;i++){
         arr[length]=arguments[i];
     }
     return arr.length;
@@ -709,7 +710,7 @@ console.log(typeof Number('3234'));
 array.method('toString',function(){
     var start='$[';
     var end  =']$';
-    for(var x in this){
+    for (var x in this){
         start+=x.toString();
     }
 
@@ -720,7 +721,7 @@ console.log(a);
 var c={};
 c.a=a;
 console.log(c);
-for(var x in c){
+for (var x in c){
     if(c.hasOwnProperty(x))
         console.log(c[x]);
 }*/ //以后再说,想的头痛
@@ -729,7 +730,7 @@ test('数组排序:插入排序的实现')
 var insert_sort=function(arr,func)
 {
     var i,j,temp;
-    for(i=1;i<arr.length;i++)
+    for (i=1;i<arr.length;i++)
     {
         temp=arr[i];
         j=i-1;
@@ -755,11 +756,11 @@ var shell_sort=function(arr,func)//K&R 想不出这么好的结构,记住吧
 {
     var gap,i,j,temp;
     gap=Math.floor(arr.length/2);
-    for(;gap>0;gap=Math.floor(gap/2))
+    for (;gap>0;gap=Math.floor(gap/2))
     {
-        for(i=gap;i<arr.length;i++)
+        for (i=gap;i<arr.length;i++)
         {
-            for(j=i-gap;j>=0&&func(arr[j],arr[j+gap])>0;j-=gap)
+            for (j=i-gap;j>=0&&func(arr[j],arr[j+gap])>0;j-=gap)
             {
                 temp=arr[j];
                 arr[j]=arr[j+gap];
@@ -815,7 +816,7 @@ var merge=function(arr1,arr2){
     var func;
     var Arr=[];
     var other=[];
-    for(var i=0;i<arguments.length;i++){
+    for (var i=0;i<arguments.length;i++){
         if(type(arguments[i])===type(function(){})){
             func=arguments[i];
         }
@@ -841,7 +842,7 @@ var merge=function(arr1,arr2){
 
     function map(arr){//先把没一个数组参数分别进行排序
         var temp=[];
-        for(var i=0;i<arr.length;i++){
+        for (var i=0;i<arr.length;i++){
             temp.push(arr[i].sort(func));
         }
         return temp;
@@ -851,7 +852,7 @@ var merge=function(arr1,arr2){
         if(arr.length===1){
             return arr[0];//如果参数中只有一个数组直接返回这个数组
         }
-        for(var i=0;i<arr.length;i++){
+        for (var i=0;i<arr.length;i++){
             if(i===0){
                temp=twoArrMerge(arr[i],arr[i+1]);
                i++;
@@ -950,7 +951,7 @@ test("数组方法:数组的增删");
 var splice=function(start,count){
     var addArr=[];
     var index=start+count;
-    for(var i=2;i<arguments.length;i++){
+    for (var i=2;i<arguments.length;i++){
         addArr.push(arguments[i]);
     }
 
@@ -958,11 +959,11 @@ var splice=function(start,count){
     var tail=this.slice(index);
     console.log(tail);
     /*问题 :this=head.concat(addArr).concat(tail);为什么不行*/
-    for(i=start;i<=index;i++){
+    for (i=start;i<=index;i++){
         this[i]=addArr[i-start];
     }
     var temp=i-1;
-    for(i=0;i<tail.length;i++){
+    for (i=0;i<tail.length;i++){
         this[i+temp]=tail[i];
     }
     return middle;
@@ -983,7 +984,7 @@ var slice=function(arr,start,end){
     }
 
     var target=[];
-    for(var i=start;i<end;i++){
+    for (var i=start;i<end;i++){
         target.push(arr[i]);
     }
     return target;
@@ -1055,4 +1056,5 @@ console.log(d.split(/(,|;|\s*)/));//来自分组被捕获的文本精会被包�
 test('从一串数字中返回一个字符串');
 console.log(String.fromCharCode(67,97,116));
 /*JavaScript中的位操作非常慢*/
+/*用jslint检查一下,不规范的地方多到无力去改了,下次写的时候直接注意规范性*/
 test.printAll();
