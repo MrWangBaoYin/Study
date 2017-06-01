@@ -2,6 +2,7 @@
 /*node.js介绍
 */
 /*在核心上说,node.js是个事件驱动的服务器端的JavaScript环境*/
+
 var test = (function () {//启动测试程序
     var all = [], num = 1, i, target, b;
     b = '一一一一一一一一一一一';

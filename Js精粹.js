@@ -800,7 +800,7 @@ var quick_sort=function(arr,func,low,high)
               j--;
           }
        }
-       arr[i]=base;//i==j 吧base放在中间
+       arr[i]=base;//i==j 把base放在中间
        quick_sort(arr,func,low,i-1);
        quick_sort(arr,func,i+1,high);
     }
