@@ -42,6 +42,8 @@ function curry() { //函数套用
 }
 
 //简易服务器模板
+
+
 var querystring = require('querystring'),
     util = require('util'),
     url = require('url'),
@@ -54,46 +56,82 @@ var server = new http.Server((req, res) => {
     if (req.url !== '/favicon.ico') {
         /*console.log(req, res);
          */
+        req.setEncoding('utf-8');
+        req.url = decodeURIComponent(req.url);
+        console.log(req.url);
+
         getData(req, res);
     }
 
 
 
 })
-server.listen(3000, () => console.log('listen 3000 port'));
+server.listen(1234, () => console.log('listen 1234 port'));
 
 function getData(req, res) {
-    var content;
+
     if (req.method === 'GET') {
-        content = url.parse(req.url, true);
-        var path = parsePath(content);
-        readFile(path, res);
+
+        req.url = url.parse(req.url, true);
+        console.log(req.url);
+        readFile(req.url, res);
     } else if (req.method === 'POST') {
         var data = '';
+        req.setEncoding('utf-8');
         req.on('data', (chunk) => {
             data += chunk;
         });
         req.on('end', () => {
-            data = querystring.parse(data);
-            content = data;
-            console.log(data.name);
+            /*data = querystring.parse(data);*/
+            console.log(data);
+            /*console.log(inspect(req, 1, 0, 1));
+             */
+            res.write('sucess');
+            res.end('');
         })
 
     }
 }
 
-function parsePath(content) {
-    return content.path.replace(/\//, '');
-}
+
 
 function readFile(name, res) {
-    console.log(name);
-    fs.readFile(name, 'utf-8', (err, data) => {
-        if (err) {
-            res.end('Not Found');
-        } else {
-            res.writeHead(200, { 'content-type': 'text/html; charset = utf-8' });
-            res.end(data);
-        }
-    })
+    name = '.' + name.pathname;
+    if (fs.existsSync(name)) {
+        writeHead(name, res);
+        fs.createReadStream(name).pipe(res);
+    } else {
+        res.writeHead(404, { 'content-type': 'text/html; charset = utf-8' });
+        res.end('路径出错,没有找到对应的文件');
+    }
+}
+
+function writeHead(name, res) {
+    var types = {
+        '.css': 'text/css',
+        '.gif': 'image/gif',
+        '.html': 'text/html',
+        '.ico': 'image/x - icon',
+        '.jpeg': 'image/jpeg',
+        '.jpg': 'image/jpeg',
+        '.js': 'text/javascript',
+        '.json': 'application/json',
+        '.pdf': 'application/pdf',
+        '.png': 'image/png',
+        '.svg': 'image/svg + xml',
+        '.swf': 'application/x - shockwave - flash',
+        '.tiff': 'image/tiff',
+        '.txt': 'text/plain',
+        '.wav': 'audio/x - wav',
+        '.wma': 'audio/x - ms - wma',
+        '.wmv': 'video/x - ms - wmv',
+        '.xml': 'text/xml'
+    };
+    var path = require('path');
+    var postfix = path.extname(name);
+    contentType = types[postfix];
+    console.log(contentType);
+    res.writeHead(200, { 'content-type': contentType + '; charset = utf-8' });
+
+
 }
