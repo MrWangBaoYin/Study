@@ -1,4 +1,4 @@
-//对象属性的get set 方式
+//对象属性的get set 方式 
 var a={
     name:'xiao ming',
     _age : 20,
