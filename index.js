@@ -1,65 +1,54 @@
 var express = require('express'),
     app = express();
 app.listen(3000);
-
+var test = require('../Study/finished/test.js');
 var addRoutes = require('./addRoutes.js');
-//addRoutes(app);
-//console.log("经过路由后直接就没了,在只有路由和静态文件的情况,谁在前面执行谁,而且执行之后就结束了,哪怕路由中没有end,依然不会调用后面的内容");
-app.use(express.static('../Study/'));
-//1:请求目录是"/"时,在没有下面中间件的时候,显示Can't GET,在有的时候下面执行了.
+
+test("中间件的行为");
+/*
+1:按顺序从上到下执行;
+2:必须调用next(),request事件才会向下传递,否则停止在当前中间件中
+3:next中如果有参数,则在客户端和服务端都打印,而且request事件终止
+4:路由其实是中间件的封装,我现在是这样理解的
+*/
+
 
 app.use(function(req, res, next) {
-    console.log('the', req.method, 'arrived');
-    //next('试下');
-    next();
-}); //调用next来确定是request事件是否在向后传递,如果next有参数,则会打印参数内容,切不会向后传递!
-app.use('/', function(req, res, next) {
-    res.end('我试试能不能截下来');
-    next();
-}); //路径匹配的中间件调用next()后,request事件依然会向后传递
-/*app.use(function(req, res, next) {
-    console.log('我执行了没有?');
-    res.writeHead(200, { 'content-type': 'text/plain' });
-    res.end('hellow world');
-    next(); //调用next()方法,哪怕已经res.end()了,request事件依然会向后传递;
-});*/
+    test("express 中间件参数");
 
-app.use(function(req, res, next) {
-    console.log('试下我会执行不');
-    next();
+    //console.log(arguments);
+    console.log(req.res === res);
+    console.log(res.req === req); //我去,有病啊!
+    //console.log(arguments.length);
+    console.log(req.url);
+    arguments[2]();
+}); //如果没有指定路径默认为'/',对get不适用
+test('路由就是中间件的进一步封装 而且没有默认路径');
+app.get('*' /*必须加,没有就不会被执行*/ , function() {
+    console.log('我是get 我也是中间件');
+
+    arguments[2]();
 });
-console.log("结论:不会向后传递request事件的只有路由和express.static中间件(因为是自带的,没法给他添加next()调用),也就是说,没有next()调用就不会向后传递request事件,而且路由啊中间件啊都是从上到下按顺序执行的");
+//结论,所有的get post use all都是中间件,只要运行next(),事件就会向后传递.
+//而且,请求和回应是一个只读流和一个只写流
 
-app.all('*', function(req, res, next) {
-    console.log('听说所有的请求都必须通过我,我试试看能不能被拦截'); //在后面依然被截下来了;
-    next();
-}); //这个all指的是get post put delete等所有的http.method都会通过这个请求;
-/*试下看看app.get有没有next参数*/
-
-app.get("*", function(req, res, next) {
-    console.log('你好啊');
-    next(); //看会不会报错
+//只要没有像res写入内容,访问页面就会出现can't GET
+test("浏览器对于相应数据的处理方式");
+app.get('/', function() {
+    arguments[1].write('ni hao a');
+    arguments[2]();
+}); //如果没有end,有write内容也不会显示在页面内,可以浏览器对于数据是先接受完毕,再解析,再显示的.
+app.get('/', function() {
+    arguments[1].end('没我不会显示的');
+    arguments[2]();
 });
 
-app.get('*', function(req, res, next) {
-    console.log('我执行了吗');
-    next();
-});
-//尼玛,所有的都是中间件,我....,
-console.log('结论:所有的都是中间件,all是use的别名,next的结论同上,其他的get post都是在原始中间件的基础上增加的限制条件')
+//发现对http模块理解不够深刻,再继续深入学习http再来看express
 
-function viewF(arg) {
-    var inspect = require('util').inspect;
-    var slice = Array.prototype.slice;
-    for (var i = 0; i < arg.length; i++) {
-        console.log(inspect(arg[i], slice.call(arguments, 1)));
-    }
-}
+/*
+http 总结
+1:http接口能够以流的形式处理数据
+2:http的API是非常底层的,只涉及流的处理和消息的解析;把一个消息解析成消息头和消息主体,但不解析具体的消息头或消息主体(所谓的消息就是IncomingMessage)
+3:接收到的原始消息头保存在rawHeaders属性中,是一个键值对数组(然后http会对其进行处理使其成为一个易于操作的对象);
 
-
-app.use(function() {
-    console.log('我来瞧瞧中间件的参数到底怎么回事');
-    viewF(arguments, 1, 1, 1);
-});
-
-//以后碰到不是自己写的函数先来一下
+*/
