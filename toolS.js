@@ -88,7 +88,7 @@ function getData(req, res) {
              */
             res.write('sucess');
             res.end('');
-        })
+        });
 
     }
 }

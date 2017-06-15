@@ -21,7 +21,7 @@ var creatEl = function() { //单独封装成了一个模块
                 } else {
                     name = num;
                 }
-                event.emit('step' + num, arg.slice(1));
+                event.emit('step' + num, ...arg.slice(1));
             }
         };
     };
@@ -99,14 +99,14 @@ function readEL(name, indent) {
     var el = creatEl();
     fs.stat(path, el.step(1)); //0 先判断文件类型
     el. //事件链表
-    on('step1', arg => { //1 如果是目录,进行第2步
-        var stats = arg[0];
+    on('step1', stats => { //1 如果是目录,进行第2步
+
         if (stats.isDirectory()) {
             fs.readdir(path, el.step(2));
         }
     }).
-    on('step2', arg => { //读目录,打印,遍历检查子文件类型
-        var files = arg[0];
+    on('step2', files => { //读目录,打印,遍历检查子文件类型
+
         files.sort((a, b) => {
             var aa = a.toUpperCase(),
                 bb = b.toUpperCase();
@@ -121,14 +121,11 @@ function readEL(name, indent) {
             fs.stat(path + fileName, el.step(3, path + fileName));
         });
     }).
-    on('step3', arg => { //如果有子文件是目录,对那个文件再次调用这个函数,有点浪费,重复判断了,在简化
-        var stats = arg[0];
-        var newPath = arg[1];
-
+    on('step3', (stats, newPath) => { //如果有子文件是目录,对那个文件再次调用这个函数,有点浪费,重复判断了,在简化
         if (stats.isDirectory()) {
             readEL(newPath, indent + 2);
         }
-    }).on('Error', err => {
+    }).on('error', err => {
         console.log(err);
     });
 
@@ -152,14 +149,14 @@ function readEL(name, indent, isDir) {
         fs.stat(path, el.step(1));
     }
     el. //事件链表
-    on('step1', arg => {
-        var stats = arg[0];
+    on('step1', stats => {
+
         if (stats.isDirectory()) {
             fs.readdir(path, el.step(2));
         }
     }).
-    on('step2', arg => {
-        var files = arg[0];
+    on('step2', files => {
+
         files.sort((a, b) => {
             var aa = a.toUpperCase(),
                 bb = b.toUpperCase();
@@ -174,14 +171,11 @@ function readEL(name, indent, isDir) {
             fs.stat(path + fileName, el.step(3, path + fileName));
         });
     }).
-    on('step3', arg => {
-        var stats = arg[0];
-        var newPath = arg[1];
-
+    on('step3', (stats, newPath) => {
         if (stats.isDirectory()) {
             readEL(newPath, indent + 2, 1);
         }
-    }).on('Error', err => {
+    }).on('error', err => {
         console.log(err);
     });
 
@@ -196,15 +190,14 @@ function readEL(name) {
     var indent = 0;
     fs.stat(path, el.step(1));
     el.
-    on('step1', arg => {
-        var stats = arg[0];
+    on('step1', stats => {
+
         if (stats.isDirectory()) {
             fs.readdir(path, el.step(2));
         }
     }).
-    on('step2', arg => {
-        var files = arg[0];
-        var path2 = arg[2] || path;
+    on('step2', (files, newPath = path) => {
+        var path2 = newPath || path;
         files.sort((a, b) => {
             var aa = a.toUpperCase(),
                 bb = b.toUpperCase();
@@ -219,15 +212,12 @@ function readEL(name) {
             fs.stat(path2 + fileName, el.step(3, path2 + fileName));
         });
     }).
-    on('step3', arg => {
-        var stats = arg[0];
-        var newPath = arg[1];
-
+    on('step3', (stats, newPath) => {
         if (stats.isDirectory()) {
             fs.readdir(newPath, el.step(2, indent++, newPath + '/'));
         }
     }).
-    on('Error', err => {
+    on('error', err => {
         console.log(err);
     });
 
