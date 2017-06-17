@@ -17,7 +17,7 @@ on('close', function() {
 udp.bind(4012, 'localhost', function() {
     console.log('正在监听4012端口', arguments);
 });
-var data = new Buffer('ni hao ma');
-udp.send(data, /*offset*/ 0, /*bufferLength*/ data.length, 2140, 'localhost', function() {
+var data = new Buffer('不好');
+udp.send(data, /*offset*/ 0, /*bufferLength*/ data.length, 2104, 'localhost', function() {
     console.log('数据发送', arguments);
 }); //除了data port 其他都是可选的
