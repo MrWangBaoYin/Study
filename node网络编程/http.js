@@ -37,11 +37,11 @@ on('clientError', function( /*error socket*/ ) {
     console.log('clientError', arguments);
 }).
 on('error', err => {
-        console.log(err);
-    })
-    .listen(3000, 'localhost', function() {
-        console.log('listen 3000', arguments);
-    });
+    console.log(err);
+}).
+listen(3000, 'localhost', function() {
+    console.log('listen 3000', arguments);
+});
 
 function static(req, res) { //因为有一个异步操作,所以可以在其它未定义变量之前
     var path = req.url.pathname.replace(/\//, '');
@@ -51,12 +51,12 @@ function static(req, res) { //因为有一个异步操作,所以可以在其它�
     fs.stat(path, el.step(1));
     el.on('step1', stats => {
         var lastModified = new Date(stats.mtime).toUTCString();
-        /*if (req.headers['if-modified-since'] === lastModified) {
+        if (req.headers['if-modified-since'] === lastModified) {
             res.writeHead(304, 'not modified');
             res.end();
             console.log(req.headers);
             return; //if-modified-since的请求头，做日期检查，如果没有修改，则返回304。若修改，则返回文件
-        }*/
+        } //一般都注释掉.要不没法做实验
         res.setHeader('Last-Modified', lastModified);
         var range;
         if (req.headers.range) {
@@ -81,6 +81,42 @@ function static(req, res) { //因为有一个异步操作,所以可以在其它�
     });
 }
 
+function dealHeadersRange(req, res, stats) {
+    var range = getRange(req.headers.range, stats.size);
+    if (range.start) {
+        res.setHeader('content-range', 'bytes ' + range.start + '-' + range.end + '/' + stats.size);
+        res.setHeader('content-length', (range.end - range.start + 1));
+    } else {
+        res.writeHead(416, "Request Range Not Satisfiable");
+        res.end();
+    }
+    return range;
+}
+
+var transferZip = (function() {
+    var zip = ['.html', '.css', '.js', '.c', '.cpp', '.txt'];
+    var zipMethod = {
+        gzip: 'createGzip',
+        deflate: 'createDeflate'
+    };
+    return function(path, res, method, range) {
+        if (zip.some(profix => {
+                var bool = path.indexOf(profix) >= 0;
+                return bool;
+            })) {
+            res.setHeader('content-encoding', method);
+            writeHead(path, res);
+            fs.createReadStream(path, range).
+            pipe(zlib[zipMethod[method]](path)).
+            pipe(res);
+        } else {
+            writeHead(path, res);
+            fs.createReadStream(path, range).pipe(res);
+        }
+    };
+}());
+
+
 function getRange(str, size) {
     if (str.indexOf(",") !== -1) {
         return {};
@@ -103,35 +139,9 @@ function getRange(str, size) {
     return { start: start, end: end };
 }
 
-function dealHeadersRange(req, res, stats) {
-    var range = getRange(req.headers.range, stats.size);
-    if (range.start) {
-        res.setHeader('content-range', 'bytes ' + range.start + '-' + range.end + '/' + stats.size);
-        res.setHeader('content-length', (range.end - range.start + 1));
-    } else {
-        res.writeHead(416, "Request Range Not Satisfiable");
-        res.end();
-    }
-    return range;
-}
 
 
-var cacheControl = (function() { //缓存控制,对于图片视频等短期不会改动的文件利用客户端缓存
-    var types = ['.jpg', '.jpeg', '.gif', '.pdf', '.png', '.tiff'];
-    var maxAge = 60 * 60 * 24 * 365;
-    return function(path, res) {
-        if (types.some(profix => {
-                return path.indexOf(profix) >= 0;
-            })) {
-            var date = new Date();
-            date.setTime(date.getTime() + maxAge * 1000);
-            res.setHeader('expires', date.toUTCString());
-            res.setHeader('cache-control', 'max-age = ' + maxAge);
-        }
 
-    };
-
-}());
 var writeHead = (function() { //为不同文件设置不同响应头
     var types = {
         '.css': 'text/css',
@@ -156,7 +166,7 @@ var writeHead = (function() { //为不同文件设置不同响应头
     return function(name, res) {
 
         var postfix = path.extname(name);
-        cacheControl(postfix, res);
+        cacheControl(postfix, res); //在作映射时,正好做缓存控制
         var contentType = types[postfix];
         contentType = contentType || 'text/plain';
         res.writeHead(200, { 'content-type': contentType + '; charset = utf-8' });
@@ -166,28 +176,24 @@ var writeHead = (function() { //为不同文件设置不同响应头
 
 }());
 
-var transferZip = (function() {
-    var zip = ['.html', '.css', '.js', '.c', '.cpp', '.txt'];
-    var zipMethod = {
-        gzip: 'createGzip',
-        deflate: 'createDeflate'
-    };
-    return function(path, res, method, range) {
-        if (zip.some(profix => {
-                var bool = path.indexOf(profix) >= 0;
-                return bool;
+var cacheControl = (function() { //缓存控制,对于图片视频等短期不会改动的文件利用客户端缓存
+    var types = ['.jpg', '.jpeg', '.gif', '.pdf', '.png', '.tiff'];
+    var maxAge = 60 * 60 * 24 * 365;
+    return function(path, res) {
+        if (types.some(profix => {
+                return path.indexOf(profix) >= 0;
             })) {
-            res.setHeader('content-encoding', method);
-            writeHead(path, res);
-            fs.createReadStream(path, range).
-            pipe(zlib[zipMethod[method]](path)).
-            pipe(res);
-        } else {
-            writeHead(path, res);
-            fs.createReadStream(path, range).pipe(res);
+            var date = new Date();
+            date.setTime(date.getTime() + maxAge * 1000);
+            res.setHeader('expires', date.toUTCString());
+            res.setHeader('cache-control', 'max-age = ' + maxAge);
         }
+
     };
+
 }());
+
+
 
 
 

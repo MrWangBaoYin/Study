@@ -1,6 +1,7 @@
 var net = require('net');
 
-net.createServer(socket => { //客户端连接到时触发connection事件
+net.createServer().
+on('connection', socket => { //客户端连接到时触发connection事件
     socket.setEncoding('utf8').
     on('data', data => { //对面发送数据到达时触发
         console.log('data', data);
@@ -31,9 +32,6 @@ on('error', err => {
 }).
 on('close', () => { //调用server.close后服务器停止接受新套接字连接,但会保持当前存在的连接,等待所有的连接都断开后,会触发该事件
     console.log('Server Close');
-}).
-on('conection', function() { //createServer时触发
-    console.log('conection', arguments);
 }).
 on('listening', function() { //listen时触发
     console.log('listening', arguments);

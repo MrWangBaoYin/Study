@@ -17,7 +17,7 @@ proxy.on('connect', (req, s_cSocket, head) => {
         'Proxy-agent: Node.js-Proxy\r\n' + '\r\n');
     s_tSocket.write(head);
     s_tSocket.pipe(s_cSocket);
-    s_cSocket.pipe(s_tSocket);
+    s_cSocket.pipe(s_tSocket); //实现流的连接
 }).on('error', err => {
     console.log(err);
 });
