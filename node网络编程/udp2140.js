@@ -15,10 +15,10 @@ on('close', function() {
 });
 //udp.bind绑定一个接口用于接手数据 udp.close关闭bind udp.send发送数据
 udp.bind(2104, 'localhost', function() {
-    console.log('正在监听4012端口', arguments);
+    console.log('正在监听2014端口', arguments);
 });
 var data = new Buffer('ni hao ma');
 udp.send(data, /*offset*/ 0, /*bufferLength*/ data.length, 4012, 'localhost', function() {
     console.log('数据发送', arguments);
-}); //除了data port 其他都是可选的
+}); //除了data port 其他都是可选的.而且上面所写的都是默认值
 //可以向多个端口传递数据 如果发送的端口没有别监听,数据会丢失

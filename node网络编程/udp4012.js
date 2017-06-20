@@ -11,7 +11,7 @@ on('listening', function() {
     console.log('listening', arguments);
 }).
 on('close', function() {
-    console.log('close', arguments); //调用udp.close时触发,而且不在触发message事件,想要再次接收数据需要udp.bind
+    console.log('close', arguments); //调用udp.close时触发,而且不再触发message事件,想要再次接收数据需要udp.bind
 });
 //udp.bind绑定一个接口用于接手数据 udp.close关闭bind udp.send发送数据
 udp.bind(4012, 'localhost', function() {
