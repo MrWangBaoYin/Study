@@ -6,7 +6,7 @@ function copyObject(obj) {
     var a = {},
         x;
     for (x in obj) {
-        a[x] = obj[x]
+        a[x] = obj[x];
     }
     return a;
 }
@@ -37,14 +37,28 @@ console.log(_.isEqual(a, c));
 /*原型*/
 /*以某个对象为原型创建的新对象 ==> 继承于*/
 function 继承于(proto) {
-    var a = function() {};
-    a.prototype = proto;
-    return new a;
+    var A = function() {};
+    A.prototype = proto;
+    return new A();
 }
 test('继承于 ');
 var d = 继承于(c);
 
 d.say();
+
+test('打印错误站栈');
+var a = function(a) {
+    if (typeof a !== 'number') {
+        throw new Error('不是数字');
+    }
+};
+
+try {
+    a('a');
+} catch (err) {
+    console.error(err.stack);
+}
+
 
 function type(target) {
     var a = Object.prototype.toString.call(target);
@@ -59,7 +73,7 @@ console.log(type('ni hao'));
 console.log(type(null));
 console.log(type(undefined));
 console.log(type(true));
-console.log(type(new Date));
+console.log(type(new Date()));
 
 /*函数和对象的不同 函数特有:函数的上下文 函数的行为 函数创建时附带的prototype属性 */
 /*函数最与众不同之处在于它们可以被调用*/
@@ -104,7 +118,7 @@ a.b = {
 };
 
 a.b.print();
-test("额外收获 ")
+test("额外收获 ");
 console.log(this);
 (function() {
     //   console.log(this); /*东西太多先注释*/
