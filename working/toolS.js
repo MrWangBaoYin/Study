@@ -1,24 +1,22 @@
 var test = (function() {
-    'use strict';
     var all = [],
         num = 1,
-        b = '一一一一一一一一一一一',
-        target;
-    b = b + b + b;
-    target = function(str) {
-        var number = num >= 10 ? num.toString() : '0' + num,
-            a = '第' + number + '次测试: ' + str + ' ',
-            result = a + b.slice(a.length);
-        console.log(result);
-        all.push(result);
-        num += 1;
+        b = '__________________________',
+        i;
+    b = b + b;
+    var target = function(str) {
+        var number = num >= 10 ? num.toString() : '0' + num;
+        var a = '第' + number + '次测试: ' + str + ' ';
+        console.log(b);
+        console.log('\n', a);
+        all.push(a);
+        num++;
     };
     target.printAll = function() {
-        var i;
-        for (i = 0; i < all.length; i += 1) {
+        for (i = 0; i < all.length; i++) {
             console.log(all[i]);
         }
-    }
+    };
     return target;
 }());
 exports.test = test;
@@ -37,14 +35,14 @@ function curry() { //函数套用
             that = this;
         return function() {
             that.apply(null, args.concat(slice.apply(arguments)));
-        }
-    }
+        };
+    };
 }
 
 //简易服务器模板
 
 
-var querystring = require('querystring'),
+/*var querystring = require('querystring'),
     util = require('util'),
     url = require('url'),
     http = require('http'),
@@ -54,8 +52,8 @@ var querystring = require('querystring'),
 var inspect = util.inspect;
 var server = new http.Server((req, res) => {
     if (req.url !== '/favicon.ico') {
-        /*console.log(req, res);
-         */
+        // console.log(req, res);
+
         req.setEncoding('utf-8');
         req.url = decodeURIComponent(req.url);
         console.log(req.url);
@@ -65,7 +63,7 @@ var server = new http.Server((req, res) => {
 
 
 
-})
+});
 server.listen(1234, () => console.log('listen 1234 port'));
 
 function getData(req, res) {
@@ -82,10 +80,10 @@ function getData(req, res) {
             data += chunk;
         });
         req.on('end', () => {
-            /*data = querystring.parse(data);*/
+            //data = querystring.parse(data);
             console.log(data);
-            /*console.log(inspect(req, 1, 0, 1));
-             */
+            // console.log(inspect(req, 1, 0, 1));
+
             res.write('sucess');
             res.end('');
         });
@@ -129,9 +127,10 @@ function writeHead(name, res) {
     };
     var path = require('path');
     var postfix = path.extname(name);
-    contentType = types[postfix];
+    var contentType = types[postfix];
     console.log(contentType);
     res.writeHead(200, { 'content-type': contentType + '; charset = utf-8' });
 
 
 }
+*/
