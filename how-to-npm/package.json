@@ -1,0 +1,19 @@
+{
+    "name": "how-to-npm",
+    "version": "1.0.0",
+    "main": "index.js",
+    "scripts": {
+        "test": "node test.js"
+    },
+    "author": "rswby",
+    "license": "ISC",
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/rswby/Study/how-to-npm.git"
+    },
+    "dependencies": {
+        "@linclark/pkg": "^1.0.2"
+    },
+    "devDependencies": {},
+    "description": "this is a how-to-npm exercise module!"
+}
