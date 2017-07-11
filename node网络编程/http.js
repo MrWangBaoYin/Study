@@ -12,9 +12,7 @@ http.createServer((req, res) => {
     if (req.url !== '/favicon.ico') {
         req.url.replace(/\.\./g, '');
         req.url = url.parse(req.url, true);
-        //console.log(req);
         console.log(req.headers);
-        /*console.log(req.url);*/
         static(req, res); //静态文件服务器
     } else {
         res.end();
@@ -41,7 +39,7 @@ on('clientError', function( /*error socket*/ ) {
 on('error', err => {
     console.log(err);
 }).
-listen(3000, 'localhost', function() {
+listen(3000, function() {
     console.log('listen 3000', arguments);
 });
 

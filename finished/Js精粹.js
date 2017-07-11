@@ -1,5 +1,5 @@
 /*对象通过引用传递,它们永远不会拷贝*/
-
+/*document.writeln函数会写入字符串参数加一个换行符*/
 var Y = require('underscore');
 var _ = Y._; //在浏览器端验证时需要被注释
 function copyObject(obj) {
@@ -8,8 +8,9 @@ function copyObject(obj) {
     for (x in obj) {
         a[x] = obj[x];
     }
-    return a;
 }
+
+
 var test = require("./test.js");
 var a = {
     name: 'xiao ming',
