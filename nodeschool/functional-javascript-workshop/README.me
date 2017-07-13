@@ -2,13 +2,13 @@
 ---
 
 1. 转化arrayList类型到Array
-```js  
+```javascript  
 var slice = Function.prototype.call.bind(Array.prototype.slice);
 var args = slice(arguments);
 ```
 
 2. 检查数据类型
-```js
+```jav
 var type = Function.prototype.call.bind(Object.prototype.toString);
 console.log(type([]));
 ```
