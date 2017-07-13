@@ -8,7 +8,7 @@ var args = slice(arguments);
 ```
 
 2. 检查数据类型
-```jav
+```javascript
 var type = Function.prototype.call.bind(Object.prototype.toString);
 console.log(type([]));
 ```
@@ -69,5 +69,6 @@ var add1_2 = function(arg){
 
 
 ---
-# 注意点
+注意点
+---
 1. ```javascript Array.prototype.reduce ``` 的参数中是有一个可以省略的初始值的,只有初始值省略时,才会把数组的第一个元素作为初始值,竟然一开始学的时候就错了!!!
