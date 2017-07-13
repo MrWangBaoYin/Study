@@ -1,6 +1,6 @@
 //简易静态服务器的实现
 //服务器所监视的静态文件相对路径是根据执行静态服务器时的工作路径来的
-//如果想实现任意目录的静态服务器需要做绝对
+//如果想实现任意目录的静态服务器需要做绝对 
 var http = require('http'),
     fs = require('fs'),
     creatEL = require('../finished/creatEL.js'),
