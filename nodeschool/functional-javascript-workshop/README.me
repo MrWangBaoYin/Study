@@ -19,7 +19,7 @@ console.log(type([]));
 函数的curry
 ---
 1. 原来curry的实现
-```js
+```javascript
 function curry() { //函数套用
     Function.prototype.curry = function() {
         var slice = Array.prototype.slice,
@@ -32,7 +32,7 @@ function curry() { //函数套用
 }
 ```
 2. bind curry的实现
-```js
+```javascript
 function curryN(fn, n) {
     n = n || fn.length
     return function curriedN(arg) {
@@ -42,7 +42,7 @@ function curryN(fn, n) {
 }
 ```
 类似于
-```js
+```javascript
 var add = function(a, b, c) {
     return (a + b + c);
 };
@@ -51,7 +51,7 @@ add.bind(null, 1).bind(null, 2).bind(null, 3)();
 ```
 
 其实最简单的函数套用方式是
-```js
+```javascript
 var add1_2 = function(arg){
 	return add(1,2,arg);
 }
@@ -70,4 +70,4 @@ var add1_2 = function(arg){
 
 ---
 # 注意点
-1. ```js Array.prototype.reduce ``` 的参数中是有一个可以省略的初始值的,只有初始值省略时,才会把数组的第一个元素作为初始值,竟然一开始学的时候就错了!!!
+1. ```javascript Array.prototype.reduce ``` 的参数中是有一个可以省略的初始值的,只有初始值省略时,才会把数组的第一个元素作为初始值,竟然一开始学的时候就错了!!!
